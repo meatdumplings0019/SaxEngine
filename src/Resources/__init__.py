@@ -1,5 +1,5 @@
 ﻿from typing import Any
-from src.Lib.message import Message
+from src.Libs.message import Message
 
 
 class Resource:

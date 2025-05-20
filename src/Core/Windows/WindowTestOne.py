@@ -2,7 +2,7 @@
 from pygame import Surface
 
 from src.InputSystem import InputAction
-from src.Lib.display import Display
+from src.Libs.display import Display
 from src.Resources.Font import FontResource
 from src.Window import Window
 

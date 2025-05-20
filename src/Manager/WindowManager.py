@@ -1,7 +1,7 @@
 ﻿import pygame
 
 from src.InputSystem import InputAction
-from src.Lib.message import Message
+from src.Libs.message import Message
 from src.Manager import Manager
 from src.Window import Window
 from src.Window.DefaultWindow import DefaultWindow

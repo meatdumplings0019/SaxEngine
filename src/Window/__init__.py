@@ -1,7 +1,7 @@
 ﻿import pygame
 from src.InputSystem import InputAction
 from src.InputSystem.KeyCode import KeyCode
-from src.Lib.resolution import get_window_resolution
+from src.Libs.resolution import get_window_resolution
 
 class Window:
     FULLSCREEN_SIZE = get_window_resolution()

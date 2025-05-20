@@ -2,7 +2,7 @@
 
 import pygame
 from pygame import font as pyfont, Surface
-from src.Lib.types import color_type
+from src.Libs.types import color_type
 from src.Resources import Resource
 
 class FontAssets:
