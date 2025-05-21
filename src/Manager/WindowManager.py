@@ -10,7 +10,6 @@ class WindowManager(Manager):
     def __init__(self) -> None:
         super().__init__()
         self.current_window = DefaultWindow()
-        self.errmsg = None
         self.windows = {}
 
     def add(self, name: str, value: Window) -> Message[bool]:
