@@ -1,4 +1,7 @@
-﻿class KeyCode:
+﻿from enum import Enum
+
+
+class KeyCode(Enum):
     ACTIVEEVENT = 32768
 
     ANYFORMAT = 268435456

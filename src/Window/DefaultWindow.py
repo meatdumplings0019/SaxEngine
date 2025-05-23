@@ -1,8 +1,8 @@
 ﻿from src.Scene.DefaultScene import DefaultScene
-from src.Window import Window
+from src.Window.IndependenceWindow import IndependenceWindow
 
 
-class DefaultWindow(Window):
+class DefaultWindow(IndependenceWindow):
     def __init__(self):
         super().__init__(1280, 720, "Error Window")
 

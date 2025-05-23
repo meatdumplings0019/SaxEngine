@@ -14,14 +14,14 @@ class Application:
         self.window_manager = WindowManager()
         self.window_init()
         self.window_manager.switch(main)
+        self.window_manager.init()
 
         self.input_system = InputSystem()
 
         self.surface_display = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
 
-    def window_init(self):
-        ...
+    def window_init(self): ...
 
     def handle_event(self):
         for event in self.input_system.Get():

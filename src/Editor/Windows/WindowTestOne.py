@@ -3,11 +3,10 @@ from pygame import Surface
 
 from src.InputSystem import InputAction
 from src.Libs.display import Display
-from src.Resources.Font import FontResource
-from src.Window import Window
+from src.Window.IndependenceWindow import IndependenceWindow
 
 
-class WindowTestOne(Window):
+class WindowTestOne(IndependenceWindow):
     def __init__(self) -> None:
         super().__init__(1280, 720, "test1")
 

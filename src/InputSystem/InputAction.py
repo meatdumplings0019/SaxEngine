@@ -1,6 +1,8 @@
 ﻿import pygame
 from pygame import Rect
 
+from src.InputSystem.KeyCode import KeyCode
+
 
 class InputAction:
     def __init__(self, event: pygame.event.Event):
@@ -9,13 +11,13 @@ class InputAction:
     def IsQuit(self) -> bool:
         return self.event.type == pygame.QUIT
 
-    def IsKeyDown(self, key: int) -> bool:
+    def IsKeyDown(self, key: KeyCode) -> bool:
         if self.event.type == pygame.KEYDOWN:
             return self.event.key == key
 
         return False
 
-    def IsKeyUp(self, key: int) -> bool:
+    def IsKeyUp(self, key: KeyCode) -> bool:
         if self.event.type == pygame.KEYUP:
             return self.event.key == key
 

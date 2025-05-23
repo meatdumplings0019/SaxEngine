@@ -1,0 +1,18 @@
+﻿import pygame
+
+from src.InputSystem.KeyCode import KeyCode
+from src.Window import Window
+
+
+class IndependenceWindow(Window):
+    def __init__(self, width = 0, height = 0, title = "Window", full_key: KeyCode = KeyCode):
+        super().__init__(width, height, title)
+        self.window_state = 0
+
+        self.is_fullscreen = False
+        self.full_key = full_key
+
+        self.surface_display = pygame.display.get_surface()
+
+    def update_surface(self):
+        self.surface_display = pygame.display.get_surface()

@@ -1,16 +1,16 @@
 ﻿import pygame
 from pygame import Surface
 from src.InputSystem import InputAction
-from src.Window import Window
+from src.Window.IndependenceWindow import IndependenceWindow
 
 
-class WindowTestTwo(Window):
+class WindowTestTwo(IndependenceWindow):
     def __init__(self) -> None:
         super().__init__(720, 720, "test2")
 
     def handle_event(self, event: InputAction) -> None:
         if event.IsKeyDown(pygame.K_1):
-            self.manager.switch("test11")
+            self.manager.switch("test1")
 
     def render(self):
         font = Surface((400, 400))

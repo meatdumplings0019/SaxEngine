@@ -3,6 +3,7 @@ from src.Libs.message import Message
 from src.Manager import Manager
 from src.Scene import Scene
 from src.Scene.DefaultScene import DefaultScene
+from src.Scene.EmptyScene import EmptyScene
 
 
 class SceneManager(Manager):
@@ -32,6 +33,13 @@ class SceneManager(Manager):
 
     def has(self, name: str) -> bool:
         return name in self.scenes
+
+    def init(self):
+        if not self.scenes:
+            self.add("empty", EmptyScene())
+
+        if isinstance(self.current_scene, DefaultScene):
+            self.switch(list(self.scenes.keys())[0])
     
     def switch(self, key) -> Message[bool]:
         try:
