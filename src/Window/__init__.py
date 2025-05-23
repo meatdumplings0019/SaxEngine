@@ -2,6 +2,9 @@
 from src.InputSystem import InputAction
 from src.InputSystem.KeyCode import KeyCode
 from src.Libs.resolution import get_window_resolution
+from src.Manager.SceneManager import SceneManager
+from src.Scene.EmptyScene import EmptyScene
+
 
 class Window:
     FULLSCREEN_SIZE = get_window_resolution()
@@ -17,7 +20,16 @@ class Window:
         self.is_fullscreen = False
         self.full_key = full_key
 
+        self.scene_manager = SceneManager()
+        self.scene_manager.add("empty", EmptyScene())
+        self.scene_init()
+        if self.scene_manager.has("empty"):
+            self.scene_manager.switch("empty")
+
         self.surface_display = pygame.display.get_surface()
+
+    def scene_init(self):
+        self.scene_manager.remove("empty")
 
     def update_surface(self):
         self.surface_display = pygame.display.get_surface()
@@ -26,8 +38,17 @@ class Window:
         self.width = self._width
         self.height = self._height
 
-    def handle_event(self, event: InputAction): ...
-    def update(self):...
-    def render(self): ...
-    def enter(self): ...
-    def exit(self): ...
+    def handle_event(self, event: InputAction):
+        self.scene_manager.handle_event(event)
+
+    def update(self):
+        self.scene_manager.update()
+
+    def render(self):
+        self.scene_manager.render()
+
+    def enter(self):
+        self.scene_manager.enter()
+
+    def exit(self):
+        self.scene_manager.exit()

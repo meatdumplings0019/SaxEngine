@@ -1,4 +1,4 @@
-﻿from src.Core import App
+﻿from src.Editor import App
 
 if __name__ == '__main__':
     app = App()

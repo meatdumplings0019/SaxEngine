@@ -22,6 +22,16 @@ class SceneManager(Manager):
                 return Message(True)
             except Exception as e:
                 return Message(False, e)
+
+    def remove(self, name: str) -> Message[bool]:
+        try:
+            self.scenes.pop(name)
+            return Message(True)
+        except Exception as e:
+            return Message(False, e)
+
+    def has(self, name: str) -> bool:
+        return name in self.scenes
     
     def switch(self, key) -> Message[bool]:
         try:

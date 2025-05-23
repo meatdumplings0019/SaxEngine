@@ -1,7 +1,6 @@
 ﻿from src.Application import Application
-from src.Core.Windows import WindowTestTwo
-from src.Core.Windows.WindowTestOne import WindowTestOne
-from src.Core.Windows.WindowTestTwo import WindowTestTwo\
+from src.Editor.Windows.WindowTestOne import WindowTestOne
+from src.Editor.Windows.WindowTestTwo import WindowTestTwo
 
 class App(Application):
     def __init__(self):

@@ -10,7 +10,7 @@ class WindowTestTwo(Window):
 
     def handle_event(self, event: InputAction) -> None:
         if event.IsKeyDown(pygame.K_1):
-            self.manager.switch("test1")
+            self.manager.switch("test11")
 
     def render(self):
         font = Surface((400, 400))

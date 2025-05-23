@@ -1,7 +1,10 @@
-﻿import src.Core
+﻿import src.Editor
+import src.Engine
+import src.File
 import src.InputSystem
 import src.Libs
 import src.Manager
 import src.Resources
 import src.Scene
+import src.UGUI
 import src.Window
