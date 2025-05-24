@@ -1,5 +1,4 @@
 ﻿import pygame
-
 from src.InputSystem.InputAction import InputAction
 
 

@@ -2,6 +2,8 @@
 
 import pygame
 from pygame import font as pyfont, Surface
+
+from src.Libs.display import Display
 from src.Libs.types import color_type
 from src.Resources import Resource
 
@@ -26,5 +28,5 @@ class FontResource(Resource):
         return self.func(self.path, self.font_size)
 
     def render(self, size: int) -> FontAssets:
-        self.font_size = size
+        self.font_size = Display.get_global_height(size)
         return FontAssets(self.get_value())

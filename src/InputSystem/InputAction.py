@@ -13,13 +13,13 @@ class InputAction:
 
     def IsKeyDown(self, key: KeyCode) -> bool:
         if self.event.type == pygame.KEYDOWN:
-            return self.event.key == key
+            return self.event.key == key.value
 
         return False
 
     def IsKeyUp(self, key: KeyCode) -> bool:
         if self.event.type == pygame.KEYUP:
-            return self.event.key == key
+            return self.event.key == key.value
 
         return False
 

@@ -13,32 +13,24 @@ class WindowManager(Manager):
     def __init__(self) -> None:
         super().__init__()
         self.current_window = DefaultWindow()
-        self.windows = {}
+        self.windows: dict[str, IndependenceWindow] = {}
 
     def add(self, name: str, value: Window) -> Message[bool]:
         if not name in self.windows.keys():
             try:
-                if isinstance(value, IndependenceWindow):
-                    return self.__add_independence_window(name, value)
-                return Message(True)
+                return self.__add(name, value)
             except Exception as e:
                 return Message(False, e)
 
         return Message(False, f'{name} in!')
 
-    def __add(self, _id, _type, value) -> Message[bool]:
-        try:
-            value.manager = self
-            self.windows[_id] = {
-                'type': _type,
-                'value': value
-            }
+    def __add(self, _id, _val) -> Message[bool]:
+        if isinstance(_val, IndependenceWindow):
+            _val.manager = self
+            self.windows[_id] = _val
             return Message(True)
-        except Exception as e:
-            return Message(False, e)
 
-    def __add_independence_window(self, _id, window: Window) -> Message[bool]:
-        return self.__add(_id, WindowType.independence_window, window)
+        return Message(False)
 
     def remove(self, name: str) -> Message[bool]:
         try:
@@ -52,10 +44,7 @@ class WindowManager(Manager):
 
     def get(self, name: str, _type: WindowType = WindowType.independence_window) -> Message[Window]:
         try:
-            value = self.windows[name]
-            if value.get('type') != _type:
-                return Message(DefaultWindow())
-            return Message(value.get('value'))
+            return Message(self.windows[name])
         except Exception as e:
             return Message(DefaultWindow(), e)
 

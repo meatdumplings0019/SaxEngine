@@ -1,7 +1,6 @@
 ﻿import os
 import sys
 import pygame
-
 from src.InputSystem import InputSystem
 from src.Manager.WindowManager import WindowManager
 

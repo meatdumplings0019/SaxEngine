@@ -65,3 +65,6 @@ class SceneManager(Manager):
 
     def exit(self) -> None:
         self.current_scene.exit()
+
+    def update_surface(self):
+        self.current_scene.update_surface()
