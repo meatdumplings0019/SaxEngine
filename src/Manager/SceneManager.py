@@ -13,16 +13,15 @@ class SceneManager(Manager):
         self.scenes = {}
         
     def add(self, name: str, value: Scene) -> Message[bool]:
-        try:
-            var = self.scenes[name]
-            return Message(False, f'{name} in!')
-        except KeyError:
+        if not name in self.scenes.keys():
             try:
                 value.manager = self
                 self.scenes[name] = value
                 return Message(True)
             except Exception as e:
                 return Message(False, e)
+
+        return Message(False, f'{name} in!')
 
     def remove(self, name: str) -> Message[bool]:
         try:
@@ -34,7 +33,13 @@ class SceneManager(Manager):
     def has(self, name: str) -> bool:
         return name in self.scenes
 
-    def init(self):
+    def get(self, name: str) -> Message[Scene]:
+        try:
+            return Message(self.scenes[name])
+        except Exception as e:
+            return Message(DefaultScene(), e)
+
+    def init(self) -> None:
         if not self.scenes:
             self.add("empty", EmptyScene())
 
@@ -43,12 +48,16 @@ class SceneManager(Manager):
     
     def switch(self, key) -> Message[bool]:
         try:
-            self.current_scene = self.scenes[key]
+            self.current_scene.enter()
+            self.current_scene, _ = self.get(key)
             self.current_scene.update_surface()
+            self.current_scene.exit()
             return Message(True)
         except KeyError as e:
+            self.current_scene.enter()
             self.current_scene = DefaultScene()
             self.current_scene.update_surface()
+            self.current_scene.exit()
             return Message(False, e)
         
     def enter(self) -> None:
@@ -66,5 +75,5 @@ class SceneManager(Manager):
     def exit(self) -> None:
         self.current_scene.exit()
 
-    def update_surface(self):
+    def update_surface(self) -> None:
         self.current_scene.update_surface()

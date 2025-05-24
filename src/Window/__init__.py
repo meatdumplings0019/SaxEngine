@@ -10,6 +10,6 @@ class Window:
         self.height = self._height
         self.title = title
 
-    def return_size(self):
+    def return_size(self) -> None:
         self.width = self._width
         self.height = self._height

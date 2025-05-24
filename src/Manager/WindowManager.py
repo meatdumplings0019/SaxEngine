@@ -6,8 +6,6 @@ from src.Window import Window
 from src.Window.DefaultWindow import DefaultWindow
 from src.Window.EmptyWindow import EmptyWindow
 from src.Window.IndependenceWindow import IndependenceWindow
-from src.Window.WindowType import WindowType
-
 
 class WindowManager(Manager):
     def __init__(self) -> None:
@@ -42,7 +40,7 @@ class WindowManager(Manager):
     def has(self, name: str) -> bool:
         return name in self.windows
 
-    def get(self, name: str, _type: WindowType = WindowType.independence_window) -> Message[Window]:
+    def get(self, name: str) -> Message[Window]:
         try:
             return Message(self.windows[name])
         except Exception as e:
@@ -57,14 +55,18 @@ class WindowManager(Manager):
 
     def switch(self, key) -> Message[bool]:
         try:
-            self.current_window, _ = self.get(key, WindowType.independence_window)
+            self.current_window.exit()
+            self.current_window, _ = self.get(key)
             self.current_window.update_surface()
             self.set_window_size()
+            self.current_window.enter()
             return Message(True)
         except KeyError as e:
+            self.current_window.exit()
             self.current_window = DefaultWindow()
             self.current_window.update_surface()
             self.set_window_size()
+            self.current_window.enter()
             return Message(False, e)
 
     def enter(self) -> None:
@@ -74,7 +76,9 @@ class WindowManager(Manager):
         self.current_window.update()
 
     def render(self) -> None:
+        self.current_window.afterRender()
         self.current_window.render()
+        self.current_window.beforeRender()
 
     def handle_event(self, event: InputAction) -> None:
         self.current_window.handle_event(event)

@@ -1,8 +1,6 @@
-﻿from typing import Any
-
-import pygame
+﻿import pygame
+from typing import Any
 from pygame import font as pyfont, Surface
-
 from src.Libs.display import Display
 from src.Libs.types import color_type
 from src.Resources import Resource

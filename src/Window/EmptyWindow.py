@@ -1,11 +1,10 @@
 ﻿from src.Libs.display import Display
 from src.Resources.Font import FontResource
-from src.Window import Window
 from src.Window.IndependenceWindow import IndependenceWindow
 
 
 class EmptyWindow(IndependenceWindow):
-    def render(self):
+    def render(self) -> None:
         super().render()
         SIZE = Display.get_global_height(48)
 

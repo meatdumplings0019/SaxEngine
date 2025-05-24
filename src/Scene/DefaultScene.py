@@ -4,7 +4,7 @@ from src.Scene import Scene
 
 
 class DefaultScene(Scene):
-    def __init__(self, *args):
+    def __init__(self, *args) -> None:
         super().__init__()
         if args:
             self.args = args
@@ -14,7 +14,7 @@ class DefaultScene(Scene):
                 "Your scene may make a mistake."
             ]
 
-    def render(self):
+    def render(self) -> None:
         super().render()
         SIZE = Display.get_global_height(48)
 

@@ -1,10 +1,9 @@
-﻿from src.Libs.display import Display
-from src.Resources.Font import FontResource
+﻿from src.Resources.Font import FontResource
 from src.Scene import Scene
 
 class EmptyScene(Scene):
 
-    def render(self):
+    def render(self) -> None:
         super().render()
 
         res = FontResource("./Assets/Fonts/JeTBrainsMono.ttf")

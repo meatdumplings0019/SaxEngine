@@ -1,5 +1,4 @@
-﻿from src.Editor import App
+﻿from src.Editor.Starter import run
 
 if __name__ == '__main__':
-    app = App()
-    app.run()
+    run()

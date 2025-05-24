@@ -8,7 +8,7 @@ from src.Window.EmbeddedWindow import EmbeddedWindow
 
 
 class IndependenceWindow(Window):
-    def __init__(self, width = 0, height = 0, title = "Window", full_key: KeyCode = KeyCode.K_F11):
+    def __init__(self, width = 0, height = 0, title = "Window", full_key: KeyCode = KeyCode.K_F11) -> None:
         super().__init__(width, height, title)
         self.window_state = 0
 
@@ -23,10 +23,9 @@ class IndependenceWindow(Window):
         self.scene_init()
         self.scene_manager.init()
 
-    def scene_init(self):
-        ...
+    def scene_init(self) -> None: ...
 
-    def update_surface(self):
+    def update_surface(self) -> None:
         self.surface_display = pygame.display.get_surface()
         self.scene_manager.update_surface()
 
@@ -45,24 +44,44 @@ class IndependenceWindow(Window):
 
         return Message(False, f"{_id} in")
 
-    def handle_event(self, event: InputAction):
+    def handle_event(self, event: InputAction) -> None:
         self.scene_manager.handle_event(event)
+        for i, w in self.embedded_windows.items():
+            w.handle_event(event)
 
-    def update(self):
+    def update(self) -> None:
         self.scene_manager.update()
+        for i, w in self.embedded_windows.items():
+            w.update()
 
-    def render(self):
+    def afterRender(self) -> None: ...
+
+    def render(self) -> None:
         self.scene_manager.render()
+
+    def beforeRender(self) -> None:
         for i, w in self.embedded_windows.items():
             if w.active:
                 w.render()
 
-    def enter(self):
+    def enter(self) -> None:
         self.scene_manager.enter()
         for i, w in self.embedded_windows.items():
             w.enter()
 
-    def exit(self):
+    def exit(self) -> None:
         self.scene_manager.exit()
         for i, w in self.embedded_windows.items():
             w.exit()
+
+    def open_children(self, _id: str, pos = None, glo: bool = False) -> Message[bool]:
+        if not pos:
+            pos = self.width / 2, self.height / 2
+            glo = True
+
+        try:
+            obj = self.embedded_windows[_id]
+            obj.open(pos, glo)
+            return Message(True)
+        except Exception as e:
+            return Message(False, e)

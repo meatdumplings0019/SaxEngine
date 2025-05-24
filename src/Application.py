@@ -7,7 +7,7 @@ from src.Manager.WindowManager import WindowManager
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 class Application:
-    def __init__(self, main: str):
+    def __init__(self, main: str) -> None:
         pygame.init()
 
         self.window_manager = WindowManager()
@@ -20,23 +20,23 @@ class Application:
         self.surface_display = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
 
-    def window_init(self): ...
+    def window_init(self) -> None: ...
 
-    def handle_event(self):
+    def handle_event(self) -> None:
         for event in self.input_system.Get():
             if event.IsQuit():
                 pygame.quit()
                 sys.exit()
             self.window_manager.handle_event(event)
 
-    def update(self):
+    def update(self) -> None:
         self.clock.tick(60)
         self.surface_display.fill("black")
         self.window_manager.update()
         self.window_manager.render()
         pygame.display.update()
 
-    def run(self):
+    def run(self) -> None:
         self.window_manager.enter()
         while True:
             self.handle_event()
