@@ -1,6 +1,8 @@
 ﻿from src.InputSystem import InputAction
+from src.Surface import BaseSurface
 
-class Manager:
+
+class Manager(BaseSurface):
     def __init__(self) -> None: ...
     def handle_event(self, event: InputAction) -> None: ...
     def update(self) -> None: ...

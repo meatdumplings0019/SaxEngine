@@ -34,9 +34,9 @@ class IndependenceWindow(Window):
             try:
                 _val.parent = self
                 self.embedded_windows[_id] = _val
-                # for i, w in self.embedded_windows.keys():
-                    # if not w.parent is self:
-                    #     self.embedded_windows.pop(i)
+                for i, w in self.embedded_windows.keys():
+                    if not w.parent is self:
+                        self.embedded_windows.pop(i)
 
                 return Message(True)
             except Exception as e:
@@ -62,7 +62,9 @@ class IndependenceWindow(Window):
     def beforeRender(self) -> None:
         for i, w in self.embedded_windows.items():
             if w.active:
+                w.afterRender()
                 w.render()
+                w.beforeRender()
 
     def enter(self) -> None:
         self.scene_manager.enter()

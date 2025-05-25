@@ -1,6 +1,8 @@
 ﻿from src.Libs.resolution import get_window_resolution
+from src.Surface import BaseSurface
 
-class Window:
+
+class Window(BaseSurface):
     FULLSCREEN_SIZE = get_window_resolution()
     def __init__(self, width = 0, height = 0, title = "Window") -> None:
         self.manager = None

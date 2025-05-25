@@ -1,7 +1,9 @@
 ﻿import pygame
 from src.InputSystem import InputAction
+from src.Surface import BaseSurface
 
-class Scene:
+
+class Scene(BaseSurface):
     def __init__(self) -> None:
         self.manager = None
 
