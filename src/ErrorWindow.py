@@ -3,6 +3,8 @@ import traceback
 import pyperclip
 from datetime import datetime
 
+from src.Data.Path import font_path
+
 
 class ErrorWindow:
     def __init__(self, exception, width=600, height=400):
@@ -20,9 +22,9 @@ class ErrorWindow:
         }
 
         # 字体配置
-        self.title_font = pygame.font.SysFont('simhei', 24, bold=True)
-        self.text_font = pygame.font.SysFont('simhei', 18)
-        self.small_font = pygame.font.SysFont('simhei', 14)
+        self.title_font = pygame.font.Font(font_path, 24)
+        self.text_font = pygame.font.Font(font_path, 18)
+        self.small_font = pygame.font.Font(font_path, 14)
 
         # 错误信息处理
         self.exception = exception

@@ -1,5 +1,7 @@
 ﻿import pygame
 from pygame import Surface
+
+from src.Data.Path import font_path
 from src.InputSystem import InputAction
 from src.Libs.display import Display
 from src.Libs.draw import draw_antialiased_x, draw_rect
@@ -34,7 +36,7 @@ class EmbeddedWindow(Window):
         self.max_btn_rect = self.max_btn.get_rect(topright=(self.width - self.TITLE // 8 - self.TITLE - self.TITLE // 4 , self.TITLE // 8))
         self.max_btn.fill("Gray")
 
-        self.res = FontResource("./Assets/Fonts/JeTBrainsMono.ttf")
+        self.res = FontResource(font_path)
 
         self.max = False
 

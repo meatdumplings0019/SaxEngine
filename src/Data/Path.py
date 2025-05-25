@@ -1,0 +1,1 @@
+﻿font_path = "./Assets/Fonts/JeTBrainsMono.ttf"
