@@ -2,7 +2,7 @@
 from pygame import Surface
 from src.InputSystem import InputAction
 from src.Libs.display import Display
-from src.Libs.draw import draw_antialiased_x
+from src.Libs.draw import draw_antialiased_x, draw_rect
 from src.Libs.types import vec2
 from src.Resources.Font import FontResource
 from src.Window import Window
@@ -30,15 +30,23 @@ class EmbeddedWindow(Window):
         self.close_btn_rect = self.close_btn.get_rect(topright = (self.width - self.TITLE // 8, self.TITLE // 8))
         self.close_btn.fill("Gray")
 
+        self.max_btn = Surface((self.TITLE - self.TITLE // 4, self.TITLE - self.TITLE // 4))
+        self.max_btn_rect = self.max_btn.get_rect(topright=(self.width - self.TITLE // 8 - self.TITLE - self.TITLE // 4 , self.TITLE // 8))
+        self.max_btn.fill("Gray")
+
         self.res = FontResource("./Assets/Fonts/JeTBrainsMono.ttf")
+
+        self.max = False
 
         self.is_dragging = False
         self.drag_offset = 0
+
+        self._width = self.width
+        self._height = self.height
 
     def init(self) -> None:
         self.is_dragging = False
         self.drag_offset = 0
-        self.pos= self.parent.width / 2, self.parent.height / 2
 
     def open(self, pos: vec2, glo: bool = False) -> None:
         self.pos = pos if glo else Display.get_global_size(pos.x, pos.y)
@@ -56,37 +64,55 @@ class EmbeddedWindow(Window):
     def update(self) -> None: ...
 
     def handle_event(self, event: InputAction) -> None:
-        if event.IsBtnDown(Display.get_global_rect(self.title_bar_rect, self.window_rect)):
+        if event.IsBtnDown(Display.get_global_rect(self.title_bar_rect, self.window_rect)) and not self.max:
             mouse_pos = event.GetMousePosition()
             self.is_dragging = True
-            self.drag_offset = mouse_pos - vec2(self.pos)
-        elif event.IsMouseUp():
+            self.drag_offset = mouse_pos - Display.get_global_size(self.pos[0], self.pos[1])
+        elif event.IsMouseUp() or self.max:
             self.is_dragging = False
 
-        elif event.IsMouseMotion() and self.is_dragging:
+        elif event.IsMouseMotion() and self.is_dragging and not self.max:
             new_pos = pygame.Vector2(event.GetMousePosition()) - self.drag_offset
             new_pos.x = max(0, int(min(new_pos.x - self.window_box.get_width() / 2, self.parent.surface_display.get_width() - self.title_bar_rect.width)))
             new_pos.y = max(0, int(min(new_pos.y - self.window_box.get_height() / 2 , self.parent.surface_display.get_height()  - self.title_bar_rect.height)))
             new_pos += (self.window_box.get_width() / 2, self.window_box.get_height() / 2)
+            new_pos = Display.get_return_size(new_pos.x, new_pos.y)
             self.pos = new_pos
 
         if event.IsBtnDown(Display.get_global_rect(self.close_btn_rect, self.window_rect)):
             self.close()
 
+        if event.IsBtnDown(Display.get_global_rect(self.max_btn_rect, self.window_rect)):
+            self.max = not self.max
+            self.max_window()
+
     def draw_close_btn(self) -> None:
         rect_size = Display.get_global_size(self.TITLE - self.TITLE / 4, self.TITLE - self.TITLE / 4)
-        rect_pos = Display.get_global_size(self.width - self.TITLE // 8, self.TITLE // 8)
         self.close_btn = Surface(rect_size)
-        self.close_btn_rect = self.close_btn.get_rect(topright = rect_pos)
+        self.close_btn_rect = self.close_btn.get_rect()
+        self.close_btn_rect.centery = self.title_bar_rect.centery
+        self.close_btn_rect.right = self.title_bar_rect.width - Display.get_global_width(self.TITLE // 8)
         self.close_btn.fill("Gray")
 
         pygame.draw.rect(self.close_btn, "Black", (0, 0, *rect_size), int(Display.get_global_width(2)))
         srf = draw_antialiased_x(Display.get_global_size(10, 10))
-
         rec = Display.center_object(self.close_btn, srf)
-
         self.close_btn.blit(srf, rec)
         self.window_box.blit(self.close_btn, self.close_btn_rect)
+
+    def draw_max_btn(self) -> None:
+        rect_size = Display.get_global_size(self.TITLE - self.TITLE / 4, self.TITLE - self.TITLE / 4)
+        self.max_btn = Surface(rect_size)
+        self.max_btn_rect = self.close_btn.get_rect()
+        self.max_btn_rect.centery = self.title_bar_rect.centery
+        self.max_btn_rect.right = self.title_bar_rect.width - Display.get_global_width(self.TITLE // 8 + (self.TITLE - self.TITLE // 4) + self.TITLE // 8)
+        self.max_btn.fill("Gray")
+
+        pygame.draw.rect(self.max_btn, "Black", (0, 0, *rect_size), int(Display.get_global_width(2)))
+        srf = draw_rect(Display.get_global_size(10, 10))
+        rec = Display.center_object(self.close_btn, srf)
+        self.max_btn.blit(srf, rec)
+        self.window_box.blit(self.max_btn, self.max_btn_rect)
 
     def draw_text(self) -> None:
         surf = self.res.render(self.TITLE - self.TITLE//4).render(self.title, "Black")
@@ -95,7 +121,8 @@ class EmbeddedWindow(Window):
 
     def draw(self) -> None:
         self.window_box = Surface(Display.get_global_size(self.width, self.height + self.TITLE))
-        self.window_rect = self.window_box.get_rect(center=self.pos)
+        pos = self.parent.surface_display.get_rect().center if self.max else Display.get_global_size(self.pos[0], self.pos[1])
+        self.window_rect = self.window_box.get_rect(center=pos)
 
         self.bg = Surface(Display.get_global_size(self.width, self.height))
         self.bg_rect = self.bg.get_rect(topleft = Display.get_global_size(0, self.TITLE))
@@ -109,6 +136,15 @@ class EmbeddedWindow(Window):
         self.window_box.blit(self.title_bar, self.title_bar_rect)
         self.draw_text()
         self.draw_close_btn()
+        self.draw_max_btn()
+
+    def max_window(self):
+        if self.max:
+            self.width = self.parent.surface_display.get_width()
+            self.height = self.parent.surface_display.get_height() - self.TITLE
+        else:
+            self.width = self._width
+            self.height = self._height
 
     def render(self) -> None:
         self.draw()

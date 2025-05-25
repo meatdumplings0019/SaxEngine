@@ -1,5 +1,6 @@
 ﻿import pygame
 import traceback
+import pyperclip
 from datetime import datetime
 
 
@@ -7,7 +8,7 @@ class ErrorWindow:
     def __init__(self, exception, width=600, height=400):
         pygame.init()
         self.screen = pygame.display.set_mode((width, height))
-        pygame.display.set_caption("程序遇到问题")
+        pygame.display.set_caption("Error occurred!")
 
         # 颜色配置
         self.theme = {
@@ -32,19 +33,19 @@ class ErrorWindow:
         # 友好提示映射
         self.error_mapping = {
             'FileNotFoundError': {
-                'title': "文件未找到",
+                'title': "File not found",
                 'suggestion': "请检查文件路径是否正确，确认文件存在且程序有访问权限"
             },
             'ZeroDivisionError': {
-                'title': "数学计算错误",
+                'title': "Zero division",
                 'suggestion': "不能进行除以零的操作，请检查计算公式的输入值"
             },
             'KeyError': {
-                'title': "数据键值错误",
+                'title': "KeyError",
                 'suggestion': "请求的键不存在，请检查数据字典的有效键值"
             },
             'TypeError': {
-                'title': "类型错误",
+                'title': "TypeError",
                 'suggestion': "检测到不兼容的数据类型操作，请检查变量类型"
             },
             'ValueError': {
@@ -52,33 +53,48 @@ class ErrorWindow:
                 'suggestion': "输入值不符合要求，请检查数据范围和格式"
             },
             'ConnectionError': {
-                'title': "网络连接失败",
+                'title': "ConnectionError",
                 'suggestion': "无法连接到服务器，请检查网络连接和服务器状态"
             }
         }
 
-        # 窗口状态
-        self.show_details = False
+        self.panel_rect = pygame.Rect(20, self.screen.get_height() - 80,
+                                 self.screen.get_width() - 40, 60)
+
+        self.button_rect_1 = pygame.Rect(
+            self.panel_rect.right - 150,
+            self.panel_rect.centery - 15,
+            140,
+            30
+        )
+
+        self.button_rect_2 = pygame.Rect(
+            self.panel_rect.left + 10,
+            self.panel_rect.centery - 15,
+            140,
+            30
+        )
+
         self.running = True
         self.main_loop()
 
     def get_friendly_message(self):
         """生成友好错误信息"""
         default = {
-            'title': "程序遇到问题",
-            'suggestion': "发生未预期的错误，建议尝试重新启动程序或联系技术支持"
+            'title': "Error",
+            'suggestion': "Restart the program"
         }
         info = self.error_mapping.get(self.error_type, default)
 
         messages = [
-            f"发生时间：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-            f"错误类型：{self.error_type}",
-            f"问题描述：{info['title']}",
+            f"Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+            f"Type: {self.error_type}",
+            f"Description: {info['title']}",
             "",
-            "建议操作：",
+            "Suggestion:",
             info['suggestion'],
             "",
-            f"技术描述：{self.error_msg}"
+            f"Detailed information：{self.error_msg}"
         ]
         return '\n'.join(messages)
 
@@ -88,9 +104,9 @@ class ErrorWindow:
         line_height = 24
 
         for line in content.split('\n'):
-            if "发生时间" in line:
+            if "Time" in line:
                 text = self.small_font.render(line, True, self.theme['secondary'])
-            elif "建议操作" in line:
+            elif "Suggestion" in line:
                 text = self.text_font.render(line, True, self.theme['warning'])
             else:
                 text = self.text_font.render(line, True, self.theme['text'])
@@ -103,12 +119,31 @@ class ErrorWindow:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:  # 左键点击
-                    mouse_pos = pygame.mouse.get_pos()
-                    # 切换技术细节显示
-                    if (self.screen.get_width() - 170 < mouse_pos[0] < self.screen.get_width() - 30 and
-                            self.screen.get_height() - 70 < mouse_pos[1] < self.screen.get_height() - 40):
-                        self.show_details = not self.show_details
+                mouse_pos = pygame.mouse.get_pos()
+                if event.button == 1:
+                    if self.button_rect_1.collidepoint(mouse_pos):
+                        self.running = False
+                    if self.button_rect_2.collidepoint(mouse_pos):
+                        try:
+                            pyperclip.copy(self.get_friendly_message())
+                        except Exception as e:
+                            print(f"Error: {e}")
+
+    def render_btn(self):
+        pygame.draw.rect(self.screen, self.theme['secondary'], self.panel_rect, border_radius=5)
+
+        btn_color_1 = self.theme['primary']
+        btn_color_2 = self.theme["primary"]
+
+        # 绘制切换按钮
+        pygame.draw.rect(self.screen, btn_color_1, self.button_rect_1, border_radius=3)
+        pygame.draw.rect(self.screen, btn_color_2, self.button_rect_2, border_radius=3)
+        text_1 = self.text_font.render("Close", True, self.theme['text'])
+        text_2 = self.text_font.render("Copy", True, self.theme['text'])
+        text_rect_1 = text_1.get_rect(center=self.button_rect_1.center)
+        text_rect_2 = text_2.get_rect(center=self.button_rect_2.center)
+        self.screen.blit(text_1, text_rect_1)
+        self.screen.blit(text_2, text_rect_2)
 
     def main_loop(self):
         """主循环"""
@@ -116,10 +151,13 @@ class ErrorWindow:
             self.screen.fill(self.theme['background'])
 
             # 绘制标题
-            title = self.title_font.render("程序遇到问题", True, self.theme['text'])
+            title = self.title_font.render("Error!", True, self.theme['text'])
             self.screen.blit(title, (30, 20))
 
             self.draw_main_content()
+
+            self.render_btn()
+
             self.handle_events()
 
             pygame.display.update()

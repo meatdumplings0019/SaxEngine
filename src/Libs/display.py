@@ -21,6 +21,20 @@ class Display:
         return vec2(Display.get_global_width(width), Display.get_global_height(height))
 
     @staticmethod
+    def get_return_width(width) -> int:
+        s_width, s_height = pygame.display.get_window_size()
+        return int(Display.default_size[0] / s_width * width)
+
+    @staticmethod
+    def get_return_height(height) -> int:
+        s_width, s_height = pygame.display.get_window_size()
+        return int(Display.default_size[1] / s_height * height)
+
+    @staticmethod
+    def get_return_size(width, height) -> vec2:
+        return vec2(Display.get_return_width(width), Display.get_return_height(height))
+
+    @staticmethod
     def center_object(parent_surface, child_surface):
         parent_rect = parent_surface.get_rect()
         child_rect = child_surface.get_rect()
