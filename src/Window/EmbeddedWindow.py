@@ -41,8 +41,8 @@ class EmbeddedWindow(Window):
         self.is_dragging = False
         self.drag_offset = 0
 
-        self._width = self.width
-        self._height = self.height
+        self.s_width = self.width
+        self.s_height = self.height
 
     def init(self) -> None:
         self.is_dragging = False
@@ -140,11 +140,11 @@ class EmbeddedWindow(Window):
 
     def max_window(self):
         if self.max:
-            self.width = self.parent.surface_display.get_width()
-            self.height = self.parent.surface_display.get_height() - self.TITLE
+            self.width = self.parent.s_width
+            self.height = self.parent.s_height - self.TITLE
         else:
-            self.width = self._width
-            self.height = self._height
+            self.width = self.s_width
+            self.height = self.s_height
 
     def render(self) -> None:
         self.draw()
