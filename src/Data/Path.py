@@ -1,1 +1,3 @@
-﻿font_path = "./Assets/Fonts/JeTBrainsMono.ttf"
+﻿from src.Libs.Path import Path
+
+font_path = Path.join("InAssets\Fonts\JeTBrainsMono.ttf")
