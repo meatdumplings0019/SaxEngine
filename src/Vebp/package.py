@@ -4,10 +4,8 @@ from pathlib import Path
 
 
 class Package:
-    """管理 vebp-package.json 配置文件"""
     FILENAME = "vebp-package.json"
 
-    # 属性定义字典，包含所有可能的属性及其描述
     PROPERTIES = {
         "name": {
             "description": "项目名称",
@@ -43,8 +41,6 @@ class Package:
 
     @staticmethod
     def generate_default() -> dict:
-        """生成默认的 package 配置"""
-        # 获取当前目录名作为默认项目名
         project_name = Path.cwd().name
         return {
             "name": project_name,
@@ -54,7 +50,6 @@ class Package:
 
     @classmethod
     def create_config(cls, overwrite=False) -> bool:
-        """创建 package 配置文件"""
         file_path = Path.cwd() / cls.FILENAME
 
         if file_path.exists() and not overwrite:
@@ -71,7 +66,6 @@ class Package:
 
     @classmethod
     def read_config(cls):
-        """读取 package 配置"""
         file_path = Path.cwd() / cls.FILENAME
 
         if not file_path.exists():
@@ -86,17 +80,14 @@ class Package:
 
     @classmethod
     def print_config(cls):
-        """打印 package 配置详情"""
         config = cls.read_config()
 
         print("vebp-package.json 属性说明:")
         print("=" * 60)
 
         for prop, info in cls.PROPERTIES.items():
-            # 使用 get 方法安全地获取属性值，提供默认值 None
             value = config.get(prop, None) if config else None
 
-            # 格式化显示值
             if value is None:
                 value_str = "未设置"
             elif isinstance(value, (str, int, bool)):

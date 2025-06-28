@@ -1,8 +1,5 @@
 ﻿from src.Vebp.cli import CLI
 
-def main():
+if __name__ == "__main__":
     cli = CLI()
     cli.run()
-
-if __name__ == "__main__":
-    main()
