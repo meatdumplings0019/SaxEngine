@@ -1,0 +1,5 @@
+{
+  "name": "SaxEngine",
+  "main": "run.py",
+  "console": true
+}

@@ -2,8 +2,6 @@
 import shutil
 from typing import Iterator, Any
 
-from src.Libs.util import Message
-
 
 class FileStream:
     def __init__(self, file_path) -> None:
@@ -41,28 +39,22 @@ class FileStream:
         return os.path.exists(self._path)
 
     @staticmethod
-    def abs(source) -> Message[str | None]:
+    def abs(source) -> str | None:
         if isinstance(source, FileStream):
-            return Message(os.path.abspath(source.path))
+            return os.path.abspath(source.path)
         elif isinstance(source, str):
-            return Message(os.path.abspath(source))
+            return os.path.abspath(source)
         else:
-            return Message(None, "TypeError")
+            return None
 
     @staticmethod
-    def copy(source, destination) -> Message:
-        src_path, src_err = FileStream.abs(source)
-
-        if src_err is not None:
-            return Message(None, src_err)
+    def copy(source, destination):
+        src_path = FileStream.abs(source)
 
         if not os.path.isfile(src_path):
-            return Message(None, "FileNotFound")
+            return None
 
-        dest_abs, dest_err = FileStream.abs(destination)
-
-        if dest_err is not None:
-            return Message(None, dest_err)
+        dest_abs = FileStream.abs(destination)
 
         if isinstance(destination, FolderStream) or os.path.isdir(dest_abs):
             dest_path = os.path.join(dest_abs, os.path.basename(src_path))
@@ -75,7 +67,7 @@ class FileStream:
 
         shutil.copy2(src_path, dest_path)
 
-        return Message(FileStream(dest_path))
+        return FileStream(dest_path)
 
     def __repr__(self) -> str:
         return f"<FileStream: {self._path}>"
@@ -125,8 +117,8 @@ class FolderStream:
     def isExists(self) -> bool:
         return os.path.exists(self._path) and os.path.isdir(self._path)
 
-    def walk(self) -> Message[DirectoryInfo | None]:
-        if not self.isExists(): return Message(None, "DirectoryNotExists")
+    def walk(self) -> DirectoryInfo | None:
+        if not self.isExists(): return None
 
         folders = []
         files = []
@@ -142,16 +134,16 @@ class FolderStream:
         except PermissionError:
             pass
 
-        return Message(DirectoryInfo(self._path, folders, files))
+        return DirectoryInfo(self._path, folders, files)
 
     @staticmethod
-    def abs(source) -> Message[str | None]:
+    def abs(source) -> str | None:
         if isinstance(source, FolderStream):
-            return Message(os.path.abspath(source.path))
+            return os.path.abspath(source.path)
         elif isinstance(source, str):
-            return Message(os.path.abspath(source))
+            return os.path.abspath(source)
         else:
-            return Message(None, "TypeError")
+            return None
 
     def __repr__(self) -> str:
         return f"<FolderStream: {self._path}>"
