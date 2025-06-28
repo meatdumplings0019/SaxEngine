@@ -19,18 +19,15 @@ class ErrorWindow:
             'warning': (255, 153, 0)
         }
 
-        # 字体配置
         self.title_font = pygame.font.SysFont("msyh", 24)
         self.text_font = pygame.font.SysFont("msyh", 18)
         self.small_font = pygame.font.SysFont("msyh", 14)
 
-        # 错误信息处理
         self.exception = exception
         self.error_type = type(exception).__name__
         self.error_msg = str(exception)
         self.full_traceback = traceback.format_exc()
 
-        # 友好提示映射
         self.error_mapping = {
             'FileNotFoundError': {
                 'title': "File not found",
@@ -79,7 +76,6 @@ class ErrorWindow:
         self.main_loop()
 
     def get_friendly_message(self):
-        """生成友好错误信息"""
         default = {
             'title': "Error",
             'suggestion': "Restart the program"
@@ -146,11 +142,9 @@ class ErrorWindow:
         self.screen.blit(text_2, text_rect_2)
 
     def main_loop(self):
-        """主循环"""
         while self.running:
             self.screen.fill(self.theme['background'])
 
-            # 绘制标题
             title = self.title_font.render("Error!", True, self.theme['text'])
             self.screen.blit(title, (30, 20))
 
