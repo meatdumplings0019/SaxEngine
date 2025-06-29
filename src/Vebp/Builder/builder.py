@@ -6,12 +6,14 @@ import platform
 from pathlib import Path
 from typing import Dict, List, Union
 from src.Libs.path import PathUtils
+from src.Vebp.Builder import BaseBuilder
 from src.Vebp.Data.package import Package
 from src.Libs.file import FileStream, FolderStream
 
 
-class Builder:
+class Builder(BaseBuilder):
     def __init__(self, name=None, icon=None, parent=None, sub=None, base_path="."):
+        super().__init__()
         self._base_path = Path(base_path)
         self._project_dir = None
         self._name = name

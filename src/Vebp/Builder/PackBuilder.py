@@ -1,2 +1,6 @@
-﻿class PackBuilder:
-    ...
+﻿from src.Vebp.Builder import BaseBuilder
+
+
+class PackBuilder(BaseBuilder):
+    def __init__(self):
+        super().__init__()
