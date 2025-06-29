@@ -11,37 +11,77 @@ class Package:
             "description": "项目名称",
             "required": True,
             "default": "当前文件夹名称",
-            "example": "my-project"
+            "type": "str"
         },
         "main": {
             "description": "入口脚本文件路径",
             "required": True,
             "default": "无",
-            "example": "src/main.py"
+            "type": "str"
         },
         "console": {
             "description": "是否显示控制台窗口",
             "required": False,
             "default": False,
-            "example": True
+            "type": "bool"
         },
         "icon": {
             "description": "应用程序图标路径 (.ico 文件)",
             "required": False,
             "default": "无",
-            "example": "assets/icon.ico"
+            "type": "str"
         },
         "onefile": {
             "description": "是否使用单文件打包模式",
             "required": False,
             "default": True,
-            "example": False
+            "type": "bool"
         },
         "venv": {
             "description": "虚拟环境目录名称",
             "required": False,
             "default": ".venv",
-            "example": "venv"
+            "type": "str"
+        },
+        "assets": {
+            "description": "复制资源目录",
+            "required": False,
+            "default": [],
+            "type": "lst<obj>",
+            "value": {
+                "from": {
+                    "description": "原文件",
+                    "required": True,
+                    "default": None,
+                    "type": "list"
+                },
+                "to": {
+                    "description": "目标路径",
+                    "required": True,
+                    "default": None,
+                    "type": "str"
+                }
+            }
+        },
+        "in_assets": {
+            "description": "内部资源目录",
+            "required": False,
+            "default": [],
+            "type": "lst<obj>",
+            "value": {
+                "from": {
+                    "description": "原文件",
+                    "required": True,
+                    "default": None,
+                    "type": "list"
+                },
+                "to": {
+                    "description": "目标路径",
+                    "required": True,
+                    "default": None,
+                    "type": "str"
+                }
+            }
         }
     }
 
@@ -92,22 +132,33 @@ class Package:
         print("vebp-package.json 属性说明:")
         print("=" * 60)
 
-        for prop, info in cls.PROPERTIES.items():
-            value = config.get(prop, None) if config else None
-
-            if value is None:
-                value_str = "未设置"
-            elif isinstance(value, (str, int, bool)):
-                value_str = str(value)
-            else:
-                value_str = json.dumps(value, ensure_ascii=False)
-
-            print(f"属性: {prop}")
-            print(f"  描述: {info.get('description', '无描述')}")
-            print(f"  必需: {'是' if info.get('required', False) else '否'}")
-            print(f"  默认值: {info.get('default', '无')}")
-            print(f"  当前值: {value_str}")
-            print(f"  示例: {info.get('example', '无')}")
-            print("-" * 60)
+        cls._print(cls.PROPERTIES, config)
 
         return True
+
+    @staticmethod
+    def _print(dct, config=None, k=""):
+        for prop, info in dct.items():
+            print(f"{k}属性: {prop} | 类型: {info.get("type", "obj")}")
+            print(f"{k}  描述: {info.get('description', '无描述')}")
+            print(f"{k}  必需: {'是' if info.get('required', False) else '否'}")
+            print(f"{k}  默认值: {info.get('default', '无')}")
+            if config:
+                value = config.get(prop, None) if config else None
+
+                if value is None:
+                    value_str = "未设置"
+                elif isinstance(value, (str, int, bool)):
+                    value_str = str(value)
+                else:
+                    value_str = json.dumps(value, ensure_ascii=False)
+                print(f"{k}  当前值: {value_str}")
+            #
+            if config:
+                if "<" in info.get("type", "obj") and ">" in info.get("type", "obj"):
+                    cof = None
+                else:
+                    cof = config.get(prop, {})
+            else:
+                cof = None
+            Package._print(info.get("value", {}), cof, k+"    ")

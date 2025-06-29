@@ -20,8 +20,8 @@ class CLI:
               vebp build MyApp -s app.py -i app.ico -c
               vebp build ProjectX -s main.py -d
               vebp build Game -s app.py --asset "images;resources" --asset "sfx;resources"
-              vebp build App -s app.py --inasset "config.json;settings"
-              vebp build App -s app.py --inasset "templates;ui" --asset "README.md"
+              vebp build App -s app.py --in_asset "config.json;settings"
+              vebp build App -s app.py --in_asset "templates;ui" --asset "README.md"
               vebp build  # 使用 vebp-package.json 中的配置
               vebp package # 显示 package 配置
             ''')
@@ -54,8 +54,8 @@ class CLI:
               vebp build MyApp -s app.py -i app.ico -c
               vebp build ProjectX -s main.py -d
               vebp build Game -s app.py --asset "images;resources" --asset "sfx;resources"
-              vebp build App -s app.py --inasset "config.json;settings"
-              vebp build App -s app.py --inasset "templates;ui" --asset "README.md"
+              vebp build App -s app.py --in_asset "config.json;settings"
+              vebp build App -s app.py --in_asset "templates;ui" --asset "README.md"
               vebp build  # 使用 vebp-package.json 中的配置
             ''')
 
@@ -73,7 +73,7 @@ class CLI:
 
         build_parser.add_argument('--asset', action='append',
                                   help='外部资源: "源路径;目标相对路径" (复制到输出目录)')
-        build_parser.add_argument('--inasset', action='append',
+        build_parser.add_argument('--in_asset', action='append',
                                   help='内部资源: "源路径;目标相对路径" (嵌入到可执行文件中)')
 
     @staticmethod
@@ -146,19 +146,19 @@ class CLI:
                 for target, sources in assets_by_target.items():
                     builder.add_assets(sources, target)
 
-            in_assets = getattr(args, 'inasset', [])
+            in_assets = getattr(args, 'in_asset', [])
             if in_assets:
                 in_assets_by_target = {}
 
-                for inasset_spec in in_assets:
-                    parts = inasset_spec.split(';', 1)
+                for in_asset_spec in in_assets:
+                    parts = in_asset_spec.split(';', 1)
                     source = parts[0].strip()
                     target = parts[1].strip() if len(parts) > 1 else ""
 
                     in_assets_by_target.setdefault(target, []).append(source)
 
                 for target, sources in in_assets_by_target.items():
-                    builder.add_inassets(sources, target)
+                    builder.add_in_assets(sources, target)
 
             success = builder.build()
         except Exception as e:

@@ -2,5 +2,7 @@
   "name": "SaxEngine",
   "main": "run.py",
   "console": true,
-  "venv": ".venv"
+  "venv": ".venv",
+  "assets": [],
+  "in_assets": []
 }

@@ -19,7 +19,7 @@ class Builder:
         self._console = False
         self._onefile = True
         self._assets: Dict[str, List[Path]] = {}
-        self._inassets: Dict[str, List[Path]] = {}
+        self._in_assets: Dict[str, List[Path]] = {}
         self._venv = ".venv"
 
         self._base_output_dir = PathUtils.get_cwd() / Path("vebp-build")
@@ -54,8 +54,8 @@ class Builder:
         return self._assets
 
     @property
-    def inassets(self):
-        return self._inassets
+    def in_assets(self):
+        return self._in_assets
 
     @property
     def venv(self):
@@ -67,7 +67,6 @@ class Builder:
 
     @staticmethod
     def from_package():
-
         package_config = Package.read_config()
 
         if not package_config:
@@ -85,6 +84,16 @@ class Builder:
 
         onefile = package_config.get('onefile', True)
         builder.set_onefile(onefile)
+
+        assets_lst = package_config.get('assets', [])
+        if assets_lst:
+            for asset in assets_lst:
+                builder.add_assets(asset.get("from", []), asset.get("to", "."))
+
+        in_assets_lst = package_config.get('in_assets', [])
+        if in_assets_lst:
+            for asset in in_assets_lst:
+                builder.add_in_assets(asset.get("from", []), asset.get("to", "."))
 
         return builder
 
@@ -119,19 +128,19 @@ class Builder:
 
         return self
 
-    def add_inassets(self, sources: List[Union[str, Path]], target_relative_path: str = ""):
+    def add_in_assets(self, sources: List[Union[str, Path]], target_relative_path: str = ""):
         if not sources:
             return self
 
         source_paths = [Path(source) for source in sources]
 
-        self._inassets.setdefault(target_relative_path, [])
+        self._in_assets.setdefault(target_relative_path, [])
 
         for source in source_paths:
             if not source.exists():
                 print(f"警告: 内部资源源不存在: {source}", file=sys.stderr)
             else:
-                self._inassets[target_relative_path].append(source)
+                self._in_assets[target_relative_path].append(source)
 
         return self
 
@@ -151,7 +160,7 @@ class Builder:
         add_data_args = []
         separator = ";" if platform.system() == "Windows" else ":"
 
-        for target_relative, sources in self._inassets.items():
+        for target_relative, sources in self._in_assets.items():
             for source in sources:
                 abs_source = source.resolve()
 
@@ -253,9 +262,9 @@ class Builder:
         print(f"打包模式: {'单文件' if self._onefile else '带依赖的目录'}")
         print(f"控制台设置: {'显示' if self._console else '隐藏'}")
 
-        if self._inassets:
+        if self._in_assets:
             print("要嵌入的内部资源:")
-            for target_relative, sources in self._inassets.items():
+            for target_relative, sources in self._in_assets.items():
                 for source in sources:
                     print(f"  {source} -> {target_relative}")
 
