@@ -1,3 +1,3 @@
-﻿from src.Vebp.Builder import Builder
+﻿from src.Vebp.Builder.builder import Builder
 
 Builder.from_package().build()
