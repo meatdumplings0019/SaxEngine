@@ -6,7 +6,7 @@ import platform
 from pathlib import Path
 from typing import Dict, List, Union
 from src.Libs.path import PathUtils
-from src.Vebp.package import Package
+from src.Vebp.Data.package import Package
 from src.Libs.file import FileStream, FolderStream
 
 

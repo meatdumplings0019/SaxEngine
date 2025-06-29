@@ -1,6 +1,9 @@
 ﻿import json
+import os.path
 import sys
 from pathlib import Path
+
+from src.Libs.path import PathUtils
 
 
 class Package:
@@ -113,7 +116,7 @@ class Package:
 
     @classmethod
     def read_config(cls):
-        file_path = Path.cwd() / cls.FILENAME
+        file_path = PathUtils.get_cwd() / cls.FILENAME
 
         if not file_path.exists():
             return None
