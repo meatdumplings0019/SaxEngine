@@ -11,7 +11,7 @@ from src.Libs.file import FileStream, FolderStream
 
 
 class Builder:
-    def __init__(self, name=None, icon=None):
+    def __init__(self, name=None, icon=None, sub=None):
         self._project_dir = None
         self._name = name
         self._icon = Path(icon) if icon else None
@@ -21,6 +21,7 @@ class Builder:
         self._assets: Dict[str, List[Path]] = {}
         self._in_assets: Dict[str, List[Path]] = {}
         self._venv = ".venv"
+        self._sub = sub
 
         self._base_output_dir = PathUtils.get_cwd() / Path("vebp-build")
         FolderStream(self._base_output_dir).create()
@@ -103,12 +104,12 @@ class Builder:
         return self
 
     def set_console(self, console):
-        if console is not None:
+        if console:
             self._console = console
         return self
 
     def set_onefile(self, onefile):
-        if onefile is not None:
+        if onefile:
             self._onefile = onefile
         return self
 
@@ -141,6 +142,12 @@ class Builder:
                 print(f"警告: 内部资源源不存在: {source}", file=sys.stderr)
             else:
                 self._in_assets[target_relative_path].append(source)
+
+        return self
+
+    def set_sub(self, sub):
+        if sub:
+            self._sub = sub
 
         return self
 
@@ -177,11 +184,9 @@ class Builder:
         success = True
 
         for target_relative, sources in self._assets.items():
-            # 创建目标目录
             target_path = self._project_dir / target_relative
             target_folder = FolderStream(str(target_path))
 
-            # 确保目标目录存在
             if not target_folder.create():
                 print(f"  创建目录失败: {target_path}", file=sys.stderr)
                 success = False
@@ -190,10 +195,9 @@ class Builder:
             for source in sources:
                 try:
                     source_path = source.resolve()
+                    dest_path = target_path / source.name
                     if source.is_dir():
-                        dest_path = target_path / source.name
                         print(f"  复制目录: {source} -> {dest_path}")
-
                         if dest_path.exists():
                             shutil.rmtree(dest_path)
 
@@ -213,10 +217,9 @@ class Builder:
                                     print(f"    复制文件失败: {src_file} -> {dest_file}", file=sys.stderr)
                                     success = False
                     else:
-                        dest_file = target_path / source.name
-                        print(f"  复制文件: {source} -> {dest_file}")
-                        if not FileStream.copy(str(source_path), str(dest_file)):
-                            print(f"    复制文件失败: {source} -> {dest_file}", file=sys.stderr)
+                        print(f"  复制文件: {source} -> {dest_path}")
+                        if not FileStream.copy(str(source_path), str(dest_path)):
+                            print(f"    复制文件失败: {source} -> {dest_path}", file=sys.stderr)
                             success = False
                 except Exception as e:
                     print(f"  复制 {source} 出错: {str(e)}", file=sys.stderr)
@@ -328,7 +331,10 @@ class Builder:
     def build(self):
         python_path = self._get_venv_python()
 
-        self._project_dir = self._base_output_dir / self._name
+        if self._sub:
+            self._project_dir = self._base_output_dir / self._sub
+        else:
+            self._project_dir = self._base_output_dir / self._name
         FolderStream(str(self._project_dir)).create()
 
         try:
