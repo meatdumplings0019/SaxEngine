@@ -36,6 +36,12 @@ class Package:
             "required": False,
             "default": True,
             "example": False
+        },
+        "venv": {
+            "description": "虚拟环境目录名称",
+            "required": False,
+            "default": ".venv",
+            "example": "venv"
         }
     }
 
@@ -45,7 +51,8 @@ class Package:
         return {
             "name": project_name,
             "main": "",  # 默认为空
-            "console": False  # 默认不显示控制台
+            "console": False,  # 默认不显示控制台
+            "venv": ".venv"  # 默认虚拟环境目录
         }
 
     @classmethod

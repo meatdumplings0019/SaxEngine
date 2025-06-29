@@ -5,6 +5,7 @@ import sys
 import platform
 from pathlib import Path
 from typing import Dict, List, Union
+from src.Libs.path import PathUtils
 from src.Vebp.package import Package
 from src.Libs.file import FileStream, FolderStream
 
@@ -15,23 +16,66 @@ class Builder:
         self._name = name
         self._icon = Path(icon) if icon else None
         self._script_path = None
-        self._console = False  # 默认隐藏控制台
-        self._onefile = True  # 默认使用单文件模式
-        self._assets: Dict[str, List[Path]] = {}  # 外部资源: 目标相对路径 -> 源文件列表
-        self._inassets: Dict[str, List[Path]] = {}  # 内部资源: 目标相对路径 -> 源文件列表
+        self._console = False
+        self._onefile = True
+        self._assets: Dict[str, List[Path]] = {}
+        self._inassets: Dict[str, List[Path]] = {}
+        self._venv = ".venv"
 
-        self._base_output_dir = Path("vebp-build")
-        FolderStream(str(self._base_output_dir)).create()
+        self._base_output_dir = PathUtils.get_cwd() / Path("vebp-build")
+        FolderStream(self._base_output_dir).create()
+
+    @property
+    def project_dir(self):
+        return self._project_dir
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def icon(self):
+        return self._icon
+
+    @property
+    def script_path(self):
+        return self._script_path
+
+    @property
+    def console(self):
+        return self._console
+
+    @property
+    def onefile(self):
+        return self._onefile
+
+    @property
+    def assets(self):
+        return self._assets
+
+    @property
+    def inassets(self):
+        return self._inassets
+
+    @property
+    def venv(self):
+        return self._venv
+
+    @venv.setter
+    def venv(self, value):
+        self._venv = value
 
     @staticmethod
     def from_package():
+
         package_config = Package.read_config()
+
         if not package_config:
             return None
 
-        builder = Builder()
+        builder = Builder(package_config.get('name', None))
+        builder.venv = package_config.get('venv', '.venv')
 
-        builder._name = package_config.get('name', None)
         builder.set_script(package_config.get('main', None))
         builder.set_console(package_config.get('console', False))
 
@@ -39,7 +83,7 @@ class Builder:
         if icon:
             builder._icon = Path(icon)
 
-        onefile = package_config.get('onefile', True)  # 默认 True
+        onefile = package_config.get('onefile', True)
         builder.set_onefile(onefile)
 
         return builder
@@ -117,7 +161,6 @@ class Builder:
         return add_data_args
 
     def _copy_assets(self):
-        """使用FileStream和FolderStream复制所有外部资源到项目目录"""
         if not self._assets:
             return True
 
@@ -225,8 +268,8 @@ class Builder:
             check=True
         )
 
-    def _get_cmd(self):
-        cmd = ['pyinstaller', '--noconfirm']
+    def _get_cmd(self, python_path):
+        cmd = [str(python_path), '-m', 'PyInstaller', '--noconfirm']
 
         if self._onefile:
             cmd.append('--onefile')
@@ -240,7 +283,6 @@ class Builder:
             cmd.extend(['--icon', str(self._icon.resolve())])
 
         cmd.extend(self._get_add_data_args())
-
         cmd.extend(['--name', self._name, str(self._script_path.resolve())])
 
         return cmd
@@ -252,30 +294,42 @@ class Builder:
                 print(f"可执行文件不存在: {exe_path}", file=sys.stderr)
                 return
 
-            print(f"\n正在运行程序: {exe_path}")
-
-            # 根据系统决定如何运行
             if platform.system() == 'Windows':
-                # Windows系统
                 subprocess.Popen([str(exe_path)], creationflags=subprocess.CREATE_NEW_CONSOLE)
             else:
-                # 类Unix系统
                 subprocess.Popen([str(exe_path)])
         except Exception as e:
             print(f"运行程序失败: {str(e)}", file=sys.stderr)
 
+    def _get_venv_python(self):
+        venv_dir = PathUtils.get_cwd() / Path(self._venv)
+
+        if not venv_dir.exists():
+            return None
+
+        if platform.system() == "Windows":
+            python_path = venv_dir / "Scripts" / "python.exe"
+        else:
+            python_path = venv_dir / "bin" / "python"
+
+        if python_path.exists():
+            return python_path
+        return "python.exe"
+
     def build(self):
+        python_path = self._get_venv_python()
+
         self._project_dir = self._base_output_dir / self._name
         FolderStream(str(self._project_dir)).create()
 
         try:
             self._validate()
         except ValueError as e:
-            print(f"验证错误: {str(e)}", file=sys.stderr)
+            print(f"ERROR: {str(e)}", file=sys.stderr)
             return False
 
         try:
-            self._start_build(self._get_cmd())
+            self._start_build(self._get_cmd(python_path))
         except subprocess.CalledProcessError as e:
             print(f"\n打包失败! 错误代码: {e.returncode}", file=sys.stderr)
             return False
@@ -291,22 +345,22 @@ class Builder:
             source_path = Path('dist') / self._name
             target_path = self._project_dir
 
-        if not source_path.exists():
-            print(f"\n错误: 未找到生成的输出 - {source_path}", file=sys.stderr)
-            return False
-
         try:
             copy = self._copy_exe(source_path, target_path)
             self._print_result(target_path)
             assets = self._copy_assets()
 
-            self._run_executable(target_path)
+            if self._onefile:
+                run_path = target_path
+            else:
+                run_path = target_path / f"{self._name}.exe"
+
+            self._run_executable(run_path)
 
             return copy and assets
         except Exception as e:
             print(f"\n输出复制失败: {str(e)}", file=sys.stderr)
             return False
 
-    @property
-    def onefile(self):
-        return self._onefile
+    def clean(self):
+        return self

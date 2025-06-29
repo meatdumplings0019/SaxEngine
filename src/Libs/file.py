@@ -1,11 +1,12 @@
 ﻿import os
 import shutil
+from pathlib import Path
 from typing import Iterator, Any
 
 
 class FileStream:
-    def __init__(self, file_path) -> None:
-        self._path = os.path.normpath(file_path)
+    def __init__(self, file_path: str | Path) -> None:
+        self._path = os.path.normpath(str(file_path))
 
     @property
     def path(self) -> str:
@@ -100,8 +101,8 @@ class DirectoryInfo:
         return self._files
 
 class FolderStream:
-    def __init__(self, folder_path) -> None:
-        self._path = os.path.normpath(folder_path)
+    def __init__(self, folder_path: str | Path) -> None:
+        self._path = os.path.normpath(str(folder_path))
 
     @property
     def path(self) -> str:

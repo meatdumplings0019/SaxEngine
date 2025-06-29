@@ -1,5 +1,6 @@
 {
   "name": "SaxEngine",
   "main": "run.py",
-  "console": true
+  "console": true,
+  "venv": ".venv"
 }

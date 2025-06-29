@@ -107,7 +107,7 @@ class CLI:
         try:
             builder = Builder.from_package()
 
-            if builder is None:
+            if not builder:
                 builder = Builder()
 
             name = getattr(args, 'name', None)
