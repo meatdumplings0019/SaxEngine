@@ -1,5 +1,6 @@
 ﻿from pathlib import Path
 from src.Vebp.Data.config import Config
+from src.Vebp.Data.pack import Pack
 from src.Vebp.Data.package import Package
 
 
@@ -14,6 +15,9 @@ class CliInit:
         # 创建配置文件
         package_success = Package.create_config(args.force)
         config_success = Config.create_config(args.force)
+
+        if args.pack:
+            Pack.create_config(args.force)
 
         if package_success and config_success:
             print(f"\n项目 '{project_name}' 初始化成功!")

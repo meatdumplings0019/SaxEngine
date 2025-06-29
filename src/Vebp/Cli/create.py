@@ -35,4 +35,6 @@ class CliCreate:
 
         CliAdd.add_package_command(subparsers)
 
+        CliAdd.add_pack_command(subparsers)
+
         return parser

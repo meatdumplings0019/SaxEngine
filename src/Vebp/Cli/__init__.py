@@ -3,6 +3,7 @@ from src.Vebp import __version__
 from src.Vebp.Cli.build import CliBuild
 from src.Vebp.Cli.create import CliCreate
 from src.Vebp.Cli.init import CliInit
+from src.Vebp.Cli.pack import CliPack
 from src.Vebp.Cli.package import CliPackage
 
 
@@ -34,6 +35,8 @@ class CLI:
             CliInit.handle(parsed_args)
         elif parsed_args.command == 'package':
             CliPackage.handle()
+        elif parsed_args.command == 'pack':
+            CliPack.handle()
         else:
             self.parser.print_help()
             sys.exit(1)

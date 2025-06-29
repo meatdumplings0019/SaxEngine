@@ -43,6 +43,17 @@
         init_parser.add_argument('--force', '-f', action='store_true',
                                  help='覆盖现有配置文件')
 
+        init_parser.add_argument('--pack', '-p', action='store_true',
+                                 help='添加pack配置文件')
+
+    @staticmethod
+    def add_pack_command(subparsers):
+        pack_parser = subparsers.add_parser(
+            'pack',
+            help='构建python包',
+            description='构建python包'
+        )
+
     @staticmethod
     def add_package_command(subparsers):
         subparsers.add_parser(
