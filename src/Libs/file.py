@@ -1,4 +1,5 @@
-﻿import os
+﻿import json
+import os
 import shutil
 from pathlib import Path
 from typing import Iterator, Any
@@ -7,6 +8,10 @@ from typing import Iterator, Any
 class FileStream:
     def __init__(self, file_path: str | Path) -> None:
         self._path = os.path.normpath(str(file_path))
+
+    @property
+    def name(self) -> str:
+        return self._path.split(os.sep)[-1]
 
     @property
     def path(self) -> str:
@@ -38,6 +43,19 @@ class FileStream:
 
     def isExists(self) -> bool:
         return os.path.exists(self._path)
+
+    def is_name(self, name) -> bool:
+        return self._path == name
+
+    def is_end(self, suffix: str) -> bool:
+        return self._path.endswith(suffix)
+
+    def is_suffix(self, suffix: str) -> bool:
+        return self.is_end("." + suffix)
+
+    def read_json(self) -> dict:
+        with open(self._path, 'r', encoding="utf-8") as file:
+            return json.load(file)
 
     @staticmethod
     def abs(source) -> str | None:
@@ -145,6 +163,14 @@ class FolderStream:
             return os.path.abspath(source)
         else:
             return None
+
+    def find_file(self, file_name):
+        file = None
+        for files in self.walk().files:
+            if files.name == file_name:
+                file = files
+
+        return file
 
     def __repr__(self) -> str:
         return f"<FolderStream: {self._path}>"

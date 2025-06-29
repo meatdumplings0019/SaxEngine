@@ -4,5 +4,11 @@
   "console": true,
   "venv": ".venv",
   "assets": [],
-  "in_assets": []
+  "in_assets": [],
+  "sub_project": [
+    {
+      "path": "bin",
+      "script": "src/Vebp"
+    }
+  ]
 }

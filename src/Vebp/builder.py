@@ -11,7 +11,8 @@ from src.Libs.file import FileStream, FolderStream
 
 
 class Builder:
-    def __init__(self, name=None, icon=None, sub=None):
+    def __init__(self, name=None, icon=None, parent=None, sub=None, base_path="."):
+        self._base_path = Path(base_path)
         self._project_dir = None
         self._name = name
         self._icon = Path(icon) if icon else None
@@ -22,6 +23,10 @@ class Builder:
         self._in_assets: Dict[str, List[Path]] = {}
         self._venv = ".venv"
         self._sub = sub
+        self._parent = parent
+
+        self.sub_project_src = {}
+        self.sub_project_builder = []
 
         self._base_output_dir = PathUtils.get_cwd() / Path("vebp-build")
         FolderStream(self._base_output_dir).create()
@@ -67,13 +72,16 @@ class Builder:
         self._venv = value
 
     @staticmethod
-    def from_package():
-        package_config = Package.read_config()
+    def from_package(pkg=None, sub=None, parent=None, base_path="."):
+        if pkg:
+            package_config = pkg
+        else:
+            package_config = Package.read_config()
 
         if not package_config:
             return None
 
-        builder = Builder(package_config.get('name', None))
+        builder = Builder(package_config.get('name', None), sub=sub, parent=parent, base_path=base_path)
         builder.venv = package_config.get('venv', '.venv')
 
         builder.set_script(package_config.get('main', None))
@@ -96,11 +104,16 @@ class Builder:
             for asset in in_assets_lst:
                 builder.add_in_assets(asset.get("from", []), asset.get("to", "."))
 
+        sub_pro = package_config.get('sub_project', [])
+        if sub_pro:
+            for pro in sub_pro:
+                builder.add_sub_project(pro.get("path", "sub_project"), pro.get("script", None))
+
         return builder
 
     def set_script(self, script_path):
         if script_path:
-            self._script_path = Path(script_path)
+            self._script_path = self._base_path / Path(script_path)
         return self
 
     def set_console(self, console):
@@ -122,6 +135,7 @@ class Builder:
         self._assets.setdefault(target_relative_path, [])
 
         for source in source_paths:
+            source = self._base_path / source
             if not source.exists():
                 print(f"警告: 资源源不存在: {source}", file=sys.stderr)
             else:
@@ -138,6 +152,7 @@ class Builder:
         self._in_assets.setdefault(target_relative_path, [])
 
         for source in source_paths:
+            source = self._base_path / source
             if not source.exists():
                 print(f"警告: 内部资源源不存在: {source}", file=sys.stderr)
             else:
@@ -145,9 +160,9 @@ class Builder:
 
         return self
 
-    def set_sub(self, sub):
-        if sub:
-            self._sub = sub
+    def add_sub_project(self, key, package_path):
+        if package_path:
+            self.sub_project_src[key] = package_path
 
         return self
 
@@ -328,13 +343,31 @@ class Builder:
             return python_path
         return "python.exe"
 
+    def _compile_sub_project(self):
+        if not self.sub_project_src:
+            return
+
+        for key, pro in self.sub_project_src.items():
+
+            package = FolderStream(pro).find_file("vebp-package.json")
+
+            if not package:
+                raise FileNotFoundError("Dont package file")
+
+            self.sub_project_builder.append(self.from_package(package.read_json(), key, self._name, pro))
+
+    def _build_sub_project(self):
+        for pro in self.sub_project_builder:
+            pro.build()
+
     def build(self):
         python_path = self._get_venv_python()
 
-        if self._sub:
-            self._project_dir = self._base_output_dir / self._sub
+        if self._parent:
+            self._project_dir = self._base_output_dir / self._parent / self._sub
         else:
             self._project_dir = self._base_output_dir / self._name
+
         FolderStream(str(self._project_dir)).create()
 
         try:
@@ -370,7 +403,11 @@ class Builder:
             else:
                 run_path = target_path / f"{self._name}.exe"
 
-            self._run_executable(run_path)
+            self._compile_sub_project()
+            self._build_sub_project()
+
+            if not self._parent and not self._sub:
+                self._run_executable(run_path)
 
             return copy and assets
         except Exception as e:
@@ -379,3 +416,6 @@ class Builder:
 
     def clean(self):
         return self
+
+    def __repr__(self):
+        return f'<Builder name: {self._name}>'
