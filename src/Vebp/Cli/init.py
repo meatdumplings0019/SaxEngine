@@ -1,8 +1,8 @@
 ﻿from pathlib import Path
-from src.Vebp.Data.config import Config
-from src.Vebp.Data.pack import Pack
-from src.Vebp.Data.build_config import BuildConfig
-from src.Vebp.Data.package import Package
+from ..Data.config import Config
+from ..Data.pack import Pack
+from ..Data.build_config import BuildConfig
+from ..Data.package import Package
 
 
 class CliInit:

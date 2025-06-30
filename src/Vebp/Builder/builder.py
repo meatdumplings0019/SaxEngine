@@ -5,42 +5,27 @@ import sys
 import platform
 from pathlib import Path
 from typing import Dict, List, Union
-from src.Libs.path import PathUtils
-from src.Vebp.Builder import BaseBuilder
-from src.Vebp.Data.build_config import BuildConfig
-from src.Libs.file import FileStream, FolderStream
-from src.Vebp.Data.package import Package
+from ...Libs.path import PathUtils
+from . import BaseBuilder
+from ..Data.build_config import BuildConfig
+from ...Libs.file import FileStream, FolderStream
+from ..Data.package import Package
 
 
 class Builder(BaseBuilder):
     def __init__(self, name=None, icon=None, parent_path=None, sub=None, base_path="."):
-        super().__init__()
-        self._base_path = Path(base_path)
-        self._project_dir = None
-        self._name = name
+        super().__init__(name, base_path)
         self._icon = Path(icon) if icon else None
         self._script_path = None
         self._console = False
         self._onefile = True
         self._assets: Dict[str, List[Path]] = {}
         self._in_assets: Dict[str, List[Path]] = {}
-        self._venv = ".venv"
         self._sub = sub
         self._parent_path = parent_path
 
         self.sub_project_src = {}
         self.sub_project_builder = []
-
-        self._base_output_dir = PathUtils.get_cwd() / Path("vebp-build")
-        FolderStream(self._base_output_dir).create()
-
-    @property
-    def project_dir(self):
-        return self._project_dir
-
-    @property
-    def name(self):
-        return self._name
 
     @property
     def icon(self):
@@ -65,14 +50,6 @@ class Builder(BaseBuilder):
     @property
     def in_assets(self):
         return self._in_assets
-
-    @property
-    def venv(self):
-        return self._venv
-
-    @venv.setter
-    def venv(self, value):
-        self._venv = value
 
     @staticmethod
     def from_package(folder_path = None, sub=None, parent=None, base_path="."):
@@ -138,14 +115,14 @@ class Builder(BaseBuilder):
 
         source_paths = [Path(source) for source in sources]
 
-        self._assets.setdefault(target_relative_path, [])
+        self.assets.setdefault(target_relative_path, [])
 
         for source in source_paths:
             source = self._base_path / source
             if not source.exists():
                 print(f"警告: 资源源不存在: {source}", file=sys.stderr)
             else:
-                self._assets[target_relative_path].append(source)
+                self.assets[target_relative_path].append(source)
 
         return self
 
@@ -155,14 +132,14 @@ class Builder(BaseBuilder):
 
         source_paths = [Path(source) for source in sources]
 
-        self._in_assets.setdefault(target_relative_path, [])
+        self.in_assets.setdefault(target_relative_path, [])
 
         for source in source_paths:
             source = self._base_path / source
             if not source.exists():
                 print(f"警告: 内部资源源不存在: {source}", file=sys.stderr)
             else:
-                self._in_assets[target_relative_path].append(source)
+                self.in_assets[target_relative_path].append(source)
 
         return self
 
@@ -173,14 +150,13 @@ class Builder(BaseBuilder):
         return self
 
     def _validate(self):
-        if not self._name:
-            raise ValueError("项目名称是必需的")
+        super()._validate()
 
-        if not self._script_path or not self._script_path.is_file():
-            raise ValueError(f"脚本文件不存在: {self._script_path}")
+        if not self.script_path or not self.script_path.is_file():
+            raise ValueError(f"脚本文件不存在: {self.script_path}")
 
-        if self._icon and not self._icon.is_file():
-            raise ValueError(f"图标文件不存在: {self._icon}")
+        if self.icon and not self.icon.is_file():
+            raise ValueError(f"图标文件不存在: {self.icon}")
 
         return True
 
@@ -188,7 +164,7 @@ class Builder(BaseBuilder):
         add_data_args = []
         separator = ";" if platform.system() == "Windows" else ":"
 
-        for target_relative, sources in self._in_assets.items():
+        for target_relative, sources in self.in_assets.items():
             for source in sources:
                 abs_source = source.resolve()
 
@@ -204,7 +180,7 @@ class Builder(BaseBuilder):
         print("\n复制外部资源...")
         success = True
 
-        for target_relative, sources in self._assets.items():
+        for target_relative, sources in self.assets.items():
             target_path = self._project_dir / target_relative
             target_folder = FolderStream(str(target_path))
 
@@ -253,12 +229,12 @@ class Builder(BaseBuilder):
         print(f"输出目录: {self._project_dir}")
         print(f"输出文件: {target_path}")
 
-        print(f"单文件打包: {self._onefile}")
+        print(f"单文件打包: {self.onefile}")
 
-        print(f"显示控制台: {self._console}")
+        print(f"显示控制台: {self.console}")
 
     def _copy_exe(self, source_path, target_path):
-        if self._onefile:
+        if self.onefile:
             if FileStream.copy(str(source_path), str(target_path)):
                 print(f"  已复制可执行文件到: {target_path}")
                 return True
@@ -281,14 +257,14 @@ class Builder(BaseBuilder):
             return True
 
     def _start_build(self, cmd):
-        print(f"开始打包项目: {self._name}")
-        print(f"脚本路径: {self._script_path}")
-        print(f"打包模式: {'单文件' if self._onefile else '带依赖的目录'}")
-        print(f"控制台设置: {'显示' if self._console else '隐藏'}")
+        print(f"开始打包项目: {self.name}")
+        print(f"脚本路径: {self.script_path}")
+        print(f"打包模式: {'单文件' if self.onefile else '带依赖的目录'}")
+        print(f"控制台设置: {'显示' if self.console else '隐藏'}")
 
-        if self._in_assets:
+        if self.in_assets:
             print("要嵌入的内部资源:")
-            for target_relative, sources in self._in_assets.items():
+            for target_relative, sources in self.in_assets.items():
                 for source in sources:
                     print(f"  {source} -> {target_relative}")
 
@@ -304,19 +280,19 @@ class Builder(BaseBuilder):
     def _get_cmd(self, python_path):
         cmd = [str(python_path), '-m', 'PyInstaller', '--noconfirm']
 
-        if self._onefile:
+        if self.onefile:
             cmd.append('--onefile')
         else:
             cmd.append('--onedir')
 
-        if not self._console:
+        if not self.console:
             cmd.append('--noconsole')
 
-        if self._icon:
-            cmd.extend(['--icon', str(self._icon.resolve())])
+        if self.icon:
+            cmd.extend(['--icon', str(self.icon.resolve())])
 
         cmd.extend(self._get_add_data_args())
-        cmd.extend(['--name', self._name, str(self._script_path.resolve())])
+        cmd.extend(['--name', self.name, str(self.script_path.resolve())])
 
         return cmd
 
@@ -335,7 +311,7 @@ class Builder(BaseBuilder):
             print(f"运行程序失败: {str(e)}", file=sys.stderr)
 
     def _get_venv_python(self):
-        venv_dir = PathUtils.get_cwd() / Path(self._venv)
+        venv_dir = PathUtils.get_cwd() / Path(self.venv)
 
         if not venv_dir.exists():
             return None
@@ -391,11 +367,11 @@ class Builder(BaseBuilder):
             print("安装命令: pip install pyinstaller", file=sys.stderr)
             return False
 
-        if self._onefile:
-            source_path = Path('dist') / f"{self._name}.exe"
-            target_path = self._project_dir / f"{self._name}.exe"
+        if self.onefile:
+            source_path = Path('dist') / f"{self.name}.exe"
+            target_path = self._project_dir / f"{self.name}.exe"
         else:
-            source_path = Path('dist') / self._name
+            source_path = Path('dist') / self.name
             target_path = self._project_dir
 
         try:
@@ -403,10 +379,10 @@ class Builder(BaseBuilder):
             self._print_result(target_path)
             assets = self._copy_assets()
 
-            if self._onefile:
+            if self.onefile:
                 run_path = target_path
             else:
-                run_path = target_path / f"{self._name}.exe"
+                run_path = target_path / f"{self.name}.exe"
 
             if not self._parent_path and not self._sub:
                 self._run_executable(run_path)
@@ -420,4 +396,4 @@ class Builder(BaseBuilder):
         return self
 
     def __repr__(self):
-        return f'<Builder name: {self._name}>'
+        return f'<Builder name: {self.name}>'

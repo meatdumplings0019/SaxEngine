@@ -1,4 +1,4 @@
-﻿from src.Vebp.Builder import BaseBuilder
+﻿from . import BaseBuilder
 
 
 class PackBuilder(BaseBuilder):
