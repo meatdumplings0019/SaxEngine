@@ -1,6 +1,6 @@
 ﻿import argparse
 
-from .add import CliAdd
+from src.Vebp.Cli.add import CliAdd
 
 
 class CliCreate:

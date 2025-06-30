@@ -1,6 +1,6 @@
 ﻿from colorama import Fore, Style
-from .exit import _exit
-from .. import __version__
+from src.Vebp.CMD.exit import _exit
+from src.Vebp import __version__
 
 class CMD:
     def __init__(self):

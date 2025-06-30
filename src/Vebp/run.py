@@ -1,5 +1,5 @@
 ﻿from colorama import init
-from .Cli import CLI
+from src.Vebp.Cli import CLI
 
 init()
 

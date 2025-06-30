@@ -1,10 +1,10 @@
 ﻿import sys
-from .build import CliBuild
-from .create import CliCreate
-from .init import CliInit
-from .pack import CliPack
-from .package import CliPackage
-from ..CMD import CMD
+from src.Vebp.Cli.build import CliBuild
+from src.Vebp.Cli.create import CliCreate
+from src.Vebp.Cli.init import CliInit
+from src.Vebp.Cli.pack import CliPack
+from src.Vebp.Cli.package import CliPackage
+from src.Vebp.CMD import CMD
 
 
 class CLI:

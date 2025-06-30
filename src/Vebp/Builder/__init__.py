@@ -1,6 +1,6 @@
 ﻿from pathlib import Path
-from ...Libs.file import FolderStream
-from ...Libs.path import PathUtils
+from src.Libs.file import FolderStream
+from src.Libs.path import PathUtils
 
 
 class BaseBuilder:

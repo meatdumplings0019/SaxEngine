@@ -1,5 +1,5 @@
-﻿from ...Libs.file import FileStream
-from ...Libs.path import PathUtils
+﻿from src.Libs.file import FileStream
+from src.Libs.path import PathUtils
 
 
 class Config:

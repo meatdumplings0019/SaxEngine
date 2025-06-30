@@ -5,11 +5,11 @@ import sys
 import platform
 from pathlib import Path
 from typing import Dict, List, Union
-from ...Libs.path import PathUtils
-from . import BaseBuilder
-from ..Data.build_config import BuildConfig
-from ...Libs.file import FileStream, FolderStream
-from ..Data.package import Package
+from src.Libs.path import PathUtils
+from src.Libs.file import FileStream, FolderStream
+from src.Vebp.Builder import BaseBuilder
+from src.Vebp.Data.build_config import BuildConfig
+from src.Vebp.Data.package import Package
 
 
 class Builder(BaseBuilder):
@@ -384,7 +384,7 @@ class Builder(BaseBuilder):
             else:
                 run_path = target_path / f"{self.name}.exe"
 
-            if not self._parent_path and not self._sub:
+            if not self._sub:
                 self._run_executable(run_path)
 
             return copy and assets
