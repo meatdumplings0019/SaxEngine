@@ -1,6 +1,10 @@
 ﻿from colorama import Fore, Style
+
+from src.Vebp.CMD.build import cmd_build
 from src.Vebp.CMD.exit import cmd_exit
 from src.Vebp import __version__
+from src.Vebp.CMD.tool import error
+
 
 class CMD:
     def __init__(self):
@@ -14,9 +18,11 @@ class CMD:
         # noinspection PyUnreachableCode
         match command:
             case "exit":
-                cmd_exit()
+                cmd_exit(args)
+            case "build":
+                cmd_build(args)
             case other:
-                print(f"{Fore.RED}NameError: name '{other}' is not defined")
+                error(f"Unknown command {other}")
 
     def run(self):
         print(f"Vebp {__version__}")
@@ -24,5 +30,5 @@ class CMD:
 
         while True:
             self._get_input()
-            self._compile()
             print(Style.RESET_ALL, end="")
+            self._compile()

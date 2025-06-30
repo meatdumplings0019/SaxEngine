@@ -1,9 +1,8 @@
-﻿import sys
-
+﻿from src.Vebp.Builder.builder import Builder
 from src.Vebp.CMD.tool import error
 
 
-def cmd_exit(args):
+def cmd_build(args):
     if len(args) != 0:
         return error(f"Only 0 args, but has {len(args)} arguments.")
-    sys.exit(0)
+    Builder().from_package().build()
