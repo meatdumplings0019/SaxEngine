@@ -2,8 +2,8 @@
 from src.Libs.path import PathUtils
 
 
-class Pack:
-    FILENAME = "vebp-pack.json"
+class BuildConfig:
+    FILENAME = "vebp-build.json"
 
     def __init__(self, path):
         self.file = self._read(path)
@@ -17,12 +17,13 @@ class Pack:
 
     @staticmethod
     def generate_default() -> dict:
-        project_name = PathUtils.get_cwd().name
-        return {}
+        return {
+            "console": False
+        }
 
     @classmethod
-    def create(cls, overwrite=False):
-        file_path = FileStream(PathUtils.get_cwd() / cls.FILENAME)
+    def create(cls, path, overwrite=False):
+        file_path = FileStream(PathUtils.get_cwd() / path / cls.FILENAME)
 
         if file_path.exists() and not overwrite:
             print(f"{cls.FILENAME} 已存在。使用 --force 覆盖。")
@@ -32,8 +33,7 @@ class Pack:
         config = cls.generate_default()
         file_path.write_json(config)
 
-        project_name = config.get("name", "未知项目")
-        print(f"成功创建 {cls.FILENAME}! 项目名称: {project_name}")
+        print(f"成功创建 {cls.FILENAME}!")
 
         return True
 

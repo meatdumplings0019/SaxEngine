@@ -12,13 +12,13 @@
                   vebp build Game -s app.py --asset "images;resources" --asset "sfx;resources"
                   vebp build App -s app.py --in_asset "config.json;settings"
                   vebp build App -s app.py --in_asset "templates;ui" --asset "README.md"
-                  vebp build  # 使用 vebp-package.json 中的配置
+                  vebp build  # 使用 vebp-build.json 中的配置
                 ''')
 
         build_parser.add_argument('name', nargs='?', default=None,
-                                  help='项目名称 (如果在 vebp-package.json 中定义了则为可选)')
+                                  help='项目名称 (如果在 vebp-build.json 中定义了则为可选)')
         build_parser.add_argument('--src', '-s',
-                                  help='要打包的 Python 脚本路径 (如果在 vebp-package.json 中定义了则为可选)')
+                                  help='要打包的 Python 脚本路径 (如果在 vebp-build.json 中定义了则为可选)')
 
         build_parser.add_argument('--icon', '-i',
                                   help='应用程序图标 (.ico 文件)')
@@ -37,7 +37,7 @@
         init_parser = subparsers.add_parser(
             'init',
             help='初始化项目配置',
-            description='创建 vebp-package.json 和 vebp-config.json 文件'
+            description='创建 vebp-build.json 和 vebp-config.json 文件'
         )
 
         init_parser.add_argument('--force', '-f', action='store_true',
@@ -45,6 +45,9 @@
 
         init_parser.add_argument('--pack', '-p', action='store_true',
                                  help='添加pack配置文件')
+
+        init_parser.add_argument('path', nargs='?', default=".",
+                                  help='生成路径')
 
     @staticmethod
     def add_pack_command(subparsers):
@@ -59,5 +62,5 @@
         subparsers.add_parser(
             'package',
             help='显示 package 配置详情',
-            description='打印 vebp-package.json 文件的详细属性说明'
+            description='打印 vebp-build.json 文件的详细属性说明'
         )

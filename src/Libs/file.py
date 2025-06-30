@@ -7,18 +7,22 @@ from typing import Iterator, Any
 
 class FileStream:
     def __init__(self, file_path: str | Path) -> None:
-        self._path = os.path.normpath(str(file_path))
+        self._path = Path(os.path.normpath(str(file_path)))
 
     @property
     def name(self) -> str:
-        return self._path.split(os.sep)[-1]
+        return self._path.name
 
     @property
-    def path(self) -> str:
+    def path(self) -> Path:
         return self._path
 
+    @property
+    def suffix(self) -> str:
+        return self._path.suffix
+
     def create(self, value: str = "") -> bool:
-        if not os.path.exists(self._path):
+        if not self._path.exists():
             self.write(value)
             return True
 
@@ -33,7 +37,7 @@ class FileStream:
             return False
 
     def read(self) -> Any:
-        if not self.isExists(): return None
+        if not self.exists(): return None
 
         try:
             with open(self._path, 'r') as file:
@@ -41,21 +45,19 @@ class FileStream:
         except Exception:
             return None
 
-    def isExists(self) -> bool:
-        return os.path.exists(self._path)
+    def exists(self) -> bool:
+        return self._path.exists()
 
     def is_name(self, name) -> bool:
-        return self._path == name
-
-    def is_end(self, suffix: str) -> bool:
-        return self._path.endswith(suffix)
-
-    def is_suffix(self, suffix: str) -> bool:
-        return self.is_end("." + suffix)
+        return self._path.name == name
 
     def read_json(self) -> dict:
         with open(self._path, 'r', encoding="utf-8") as file:
             return json.load(file)
+
+    def write_json(self, data: dict) -> None:
+        with open(self._path, 'w', encoding="utf-8") as file:
+            json.dump(data, file, indent=2)
 
     @staticmethod
     def abs(source) -> str | None:

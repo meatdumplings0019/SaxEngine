@@ -1,7 +1,4 @@
 {
-  "name": "Vebp",
-  "main": "run.py",
-  "console": true,
-  "assets": [],
-  "in_assets": []
+  "name": "vebp",
+  "venv": ".venv"
 }

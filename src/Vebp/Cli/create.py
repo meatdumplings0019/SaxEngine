@@ -16,7 +16,7 @@ class CliCreate:
               vebp build Game -s app.py --asset "images;resources" --asset "sfx;resources"
               vebp build App -s app.py --in_asset "config.json;settings"
               vebp build App -s app.py --in_asset "templates;ui" --asset "README.md"
-              vebp build  # 使用 vebp-package.json 中的配置
+              vebp build  # 使用 vebp-build.json 中的配置
               vebp package # 显示 package 配置
             ''')
 

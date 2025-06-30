@@ -7,12 +7,13 @@ from pathlib import Path
 from typing import Dict, List, Union
 from src.Libs.path import PathUtils
 from src.Vebp.Builder import BaseBuilder
-from src.Vebp.Data.package import Package
+from src.Vebp.Data.build_config import BuildConfig
 from src.Libs.file import FileStream, FolderStream
+from src.Vebp.Data.package import Package
 
 
 class Builder(BaseBuilder):
-    def __init__(self, name=None, icon=None, parent=None, sub=None, base_path="."):
+    def __init__(self, name=None, icon=None, parent_path=None, sub=None, base_path="."):
         super().__init__()
         self._base_path = Path(base_path)
         self._project_dir = None
@@ -25,7 +26,7 @@ class Builder(BaseBuilder):
         self._in_assets: Dict[str, List[Path]] = {}
         self._venv = ".venv"
         self._sub = sub
-        self._parent = parent
+        self._parent_path = parent_path
 
         self.sub_project_src = {}
         self.sub_project_builder = []
@@ -74,39 +75,42 @@ class Builder(BaseBuilder):
         self._venv = value
 
     @staticmethod
-    def from_package(pkg=None, sub=None, parent=None, base_path="."):
-        if pkg:
-            package_config = pkg
+    def from_package(folder_path = None, sub=None, parent=None, base_path="."):
+        if folder_path:
+            folder_path = Path(str(folder_path))
+            build_config = BuildConfig(folder_path / BuildConfig.FILENAME)
+            package_config = Package(folder_path / Package.FILENAME)
         else:
-            package_config = Package.read_config()
+            build_config = BuildConfig(BuildConfig.FILENAME)
+            package_config = Package(Package.FILENAME)
 
-        if not package_config:
+        if not build_config or not package_config:
             return None
 
-        builder = Builder(package_config.get('name', None), sub=sub, parent=parent, base_path=base_path)
+        builder = Builder(package_config.get('name', None), sub=sub, parent_path=parent, base_path=base_path)
         builder.venv = package_config.get('venv', '.venv')
 
-        builder.set_script(package_config.get('main', None))
-        builder.set_console(package_config.get('console', False))
+        builder.set_script(build_config.get('main', None))
+        builder.set_console(build_config.get('console', False))
 
-        icon = package_config.get('icon', None)
+        icon = build_config.get('icon', None)
         if icon:
             builder._icon = Path(icon)
 
-        onefile = package_config.get('onefile', True)
+        onefile = build_config.get('onefile', True)
         builder.set_onefile(onefile)
 
-        assets_lst = package_config.get('assets', [])
+        assets_lst = build_config.get('assets', [])
         if assets_lst:
             for asset in assets_lst:
                 builder.add_assets(asset.get("from", []), asset.get("to", "."))
 
-        in_assets_lst = package_config.get('in_assets', [])
+        in_assets_lst = build_config.get('in_assets', [])
         if in_assets_lst:
             for asset in in_assets_lst:
                 builder.add_in_assets(asset.get("from", []), asset.get("to", "."))
 
-        sub_pro = package_config.get('sub_project', [])
+        sub_pro = build_config.get('sub_project', [])
         if sub_pro:
             for pro in sub_pro:
                 builder.add_sub_project(pro.get("path", "sub_project"), pro.get("script", None))
@@ -350,13 +354,7 @@ class Builder(BaseBuilder):
             return
 
         for key, pro in self.sub_project_src.items():
-
-            package = FolderStream(pro).find_file("vebp-package.json")
-
-            if not package:
-                raise FileNotFoundError("Dont package file")
-
-            self.sub_project_builder.append(self.from_package(package.read_json(), key, self._name, pro))
+            self.sub_project_builder.append(self.from_package(pro, key, self._project_dir, pro))
 
     def _build_sub_project(self):
         for pro in self.sub_project_builder:
@@ -365,10 +363,13 @@ class Builder(BaseBuilder):
     def build(self):
         python_path = self._get_venv_python()
 
-        if self._parent:
-            self._project_dir = self._base_output_dir / self._parent / self._sub
-        else:
-            self._project_dir = self._base_output_dir / self._name
+        if not self._parent_path:
+            self._parent_path = self.name
+
+        self._project_dir = self._base_output_dir / self._parent_path
+
+        if self._sub:
+            self._project_dir /= self._sub
 
         FolderStream(str(self._project_dir)).create()
 
@@ -379,6 +380,8 @@ class Builder(BaseBuilder):
             return False
 
         try:
+            self._compile_sub_project()
+            self._build_sub_project()
             self._start_build(self._get_cmd(python_path))
         except subprocess.CalledProcessError as e:
             print(f"\n打包失败! 错误代码: {e.returncode}", file=sys.stderr)
@@ -405,10 +408,7 @@ class Builder(BaseBuilder):
             else:
                 run_path = target_path / f"{self._name}.exe"
 
-            self._compile_sub_project()
-            self._build_sub_project()
-
-            if not self._parent and not self._sub:
+            if not self._parent_path and not self._sub:
                 self._run_executable(run_path)
 
             return copy and assets

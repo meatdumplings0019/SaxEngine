@@ -1,40 +1,40 @@
-﻿import json
-import sys
-from pathlib import Path
+﻿from src.Libs.file import FileStream
+from src.Libs.path import PathUtils
 
 
 class Config:
     FILENAME = "vebp-config.json"
 
+    def __init__(self, path):
+        self.file = self._read(path)
+
+    def _read(self, path):
+        f = FileStream(path)
+        if not f.is_name(self.FILENAME):
+            raise FileNotFoundError
+
+        return f.read_json()
+
     @staticmethod
     def generate_default() -> dict:
-        return {}
+        return {
+        }
 
     @classmethod
-    def create_config(cls, overwrite=False) -> bool:
-        file_path = Path.cwd() / cls.FILENAME
+    def create(cls, path, overwrite=False):
+        file_path = FileStream(PathUtils.get_cwd() / path / cls.FILENAME)
 
         if file_path.exists() and not overwrite:
             print(f"{cls.FILENAME} 已存在。使用 --force 覆盖。")
             return False
 
+        file_path.create()
         config = cls.generate_default()
-        with open(file_path, 'w') as f:
-            json.dump(config, f, indent=2)
+        file_path.write_json(config)
 
-        print(f"成功创建 {cls.FILENAME}! (空配置)")
+        print(f"成功创建 {cls.FILENAME}")
+
         return True
 
-    @classmethod
-    def read_config(cls):
-        file_path = Path.cwd() / cls.FILENAME
-
-        if not file_path.exists():
-            return None
-
-        try:
-            with open(file_path, 'r') as f:
-                return json.load(f)
-        except Exception as e:
-            print(f"读取 {cls.FILENAME} 出错: {str(e)}", file=sys.stderr)
-            return None
+    def get_value(self, key):
+        return self.file.get(key)
