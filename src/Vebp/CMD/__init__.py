@@ -1,5 +1,5 @@
 ﻿from colorama import Fore, Style
-from src.Vebp.CMD.exit import _exit
+from src.Vebp.CMD.exit import cmd_exit
 from src.Vebp import __version__
 
 class CMD:
@@ -14,7 +14,7 @@ class CMD:
         # noinspection PyUnreachableCode
         match command:
             case "exit":
-                _exit()
+                cmd_exit()
             case other:
                 print(f"{Fore.RED}NameError: name '{other}' is not defined")
 
