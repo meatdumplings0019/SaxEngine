@@ -18,6 +18,7 @@ class BuildConfig:
     @staticmethod
     def generate_default() -> dict:
         return {
+            "main": "run.py",
             "console": False
         }
 
