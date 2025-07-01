@@ -6,3 +6,4 @@ class Tool:
     @staticmethod
     def exit():
         quit()
+        sys_exit()
