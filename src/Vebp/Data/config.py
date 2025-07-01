@@ -17,8 +17,7 @@ class Config:
 
     @staticmethod
     def generate_default() -> dict:
-        return {
-        }
+        return {}
 
     @classmethod
     def create(cls, path, overwrite=False):
@@ -36,5 +35,11 @@ class Config:
 
         return True
 
-    def get_value(self, key):
-        return self.file.get(key)
+    def get(self, key, default=None):
+        return self.file.get(key, default)
+
+    @staticmethod
+    def default():
+        return {
+            "autoRun": True
+        }

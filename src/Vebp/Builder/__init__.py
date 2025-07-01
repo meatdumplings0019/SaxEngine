@@ -4,10 +4,12 @@ from src.Libs.path import PathUtils
 
 
 class BaseBuilder:
-    def __init__(self, name=None, base_path="."):
+    def __init__(self, name=None, base_path=".", read_config=True):
         self._name = name
         self._base_path = Path(base_path)
         self._venv = ".venv"
+
+        self._read_config = read_config
 
         self._project_dir = None
 
@@ -29,6 +31,10 @@ class BaseBuilder:
     @venv.setter
     def venv(self, value):
         self._venv = value
+
+    @property
+    def read_config(self):
+        return self._read_config
 
     def _validate(self):
         if not self.name:

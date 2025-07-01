@@ -9,12 +9,13 @@ from src.Libs.path import PathUtils
 from src.Libs.file import FileStream, FolderStream
 from src.Vebp.Builder import BaseBuilder
 from src.Vebp.Data.build_config import BuildConfig
+from src.Vebp.Data.config import Config
 from src.Vebp.Data.package import Package
 
 
 class Builder(BaseBuilder):
-    def __init__(self, name=None, icon=None, parent_path=None, sub=None, base_path="."):
-        super().__init__(name, base_path)
+    def __init__(self, name=None, icon=None, parent_path=None, sub=None, base_path=".", read_config=True):
+        super().__init__(name, base_path, read_config)
         self._icon = Path(icon) if icon else None
         self._script_path = None
         self._console = False
@@ -24,8 +25,21 @@ class Builder(BaseBuilder):
         self._sub = sub
         self._parent_path = parent_path
 
+        self._auto_run = True
+
         self.sub_project_src = {}
         self.sub_project_builder = []
+
+        self._get_path()
+
+    def _get_path(self):
+        if not self._parent_path:
+            self._parent_path = self.name
+
+        self._project_dir = self._base_output_dir / self._parent_path
+
+        if self._sub:
+            self._project_dir /= self._sub
 
     @property
     def icon(self):
@@ -51,20 +65,34 @@ class Builder(BaseBuilder):
     def in_assets(self):
         return self._in_assets
 
+    @property
+    def auto_run(self):
+        return self._auto_run
+
+    @auto_run.setter
+    def auto_run(self, value):
+        self._auto_run = value
+
     @staticmethod
-    def from_package(folder_path = None, sub=None, parent=None, base_path="."):
+    def from_package(folder_path = None, sub=None, parent=None, base_path=".", read_config=True):
+        config_config = Config.default()
         if folder_path:
             folder_path = Path(str(folder_path))
             build_config = BuildConfig(folder_path / BuildConfig.FILENAME)
             package_config = Package(folder_path / Package.FILENAME)
+            if read_config:
+                config_config = Config(folder_path / Config.FILENAME)
+
         else:
             build_config = BuildConfig(BuildConfig.FILENAME)
             package_config = Package(Package.FILENAME)
+            if read_config:
+                config_config = Config(Config.FILENAME)
 
         if not build_config or not package_config:
             return None
 
-        builder = Builder(package_config.get('name', None), sub=sub, parent_path=parent, base_path=base_path)
+        builder = Builder(package_config.get('name', None), sub=sub, parent_path=parent, base_path=base_path, read_config=read_config)
         builder.venv = package_config.get('venv', '.venv')
 
         builder.set_script(build_config.get('main', None))
@@ -91,6 +119,9 @@ class Builder(BaseBuilder):
         if sub_pro:
             for pro in sub_pro:
                 builder.add_sub_project(pro.get("path", "sub_project"), pro.get("script", None))
+
+        auto_run = config_config.get('autoRun', True)
+        builder.auto_run = auto_run
 
         return builder
 
@@ -330,7 +361,7 @@ class Builder(BaseBuilder):
             return
 
         for key, pro in self.sub_project_src.items():
-            self.sub_project_builder.append(self.from_package(pro, key, self._project_dir, pro))
+            self.sub_project_builder.append(self.from_package(pro, key, self._project_dir, pro, False))
 
     def _build_sub_project(self):
         for pro in self.sub_project_builder:
@@ -339,42 +370,22 @@ class Builder(BaseBuilder):
     def build(self):
         python_path = self._get_venv_python()
 
-        if not self._parent_path:
-            self._parent_path = self.name
-
-        self._project_dir = self._base_output_dir / self._parent_path
-
-        if self._sub:
-            self._project_dir /= self._sub
-
         FolderStream(str(self._project_dir)).create()
 
         try:
             self._validate()
-        except ValueError as e:
-            print(f"ERROR: {str(e)}", file=sys.stderr)
-            return False
 
-        try:
             self._compile_sub_project()
             self._build_sub_project()
             self._start_build(self._get_cmd(python_path))
-        except subprocess.CalledProcessError as e:
-            print(f"\n打包失败! 错误代码: {e.returncode}", file=sys.stderr)
-            return False
-        except FileNotFoundError:
-            print("\n错误: 未找到 pyinstaller 命令，请确保已安装 PyInstaller", file=sys.stderr)
-            print("安装命令: pip install pyinstaller", file=sys.stderr)
-            return False
 
-        if self.onefile:
-            source_path = Path('dist') / f"{self.name}.exe"
-            target_path = self._project_dir / f"{self.name}.exe"
-        else:
-            source_path = Path('dist') / self.name
-            target_path = self._project_dir
+            if self.onefile:
+                source_path = Path('dist') / f"{self.name}.exe"
+                target_path = self._project_dir / f"{self.name}.exe"
+            else:
+                source_path = Path('dist') / self.name
+                target_path = self._project_dir
 
-        try:
             copy = self._copy_exe(source_path, target_path)
             self._print_result(target_path)
             assets = self._copy_assets()
@@ -384,15 +395,26 @@ class Builder(BaseBuilder):
             else:
                 run_path = target_path / f"{self.name}.exe"
 
-            if not self._sub:
+            if not self._sub and self._auto_run:
                 self._run_executable(run_path)
 
             return copy and assets
+        except subprocess.CalledProcessError as e:
+            print(f"\n打包失败! 错误代码: {e.returncode}", file=sys.stderr)
+            return False
         except Exception as e:
-            print(f"\n输出复制失败: {str(e)}", file=sys.stderr)
+            print(f"\n{str(e)}", file=sys.stderr)
             return False
 
     def clean(self):
+        try:
+            shutil.rmtree(self._base_output_dir, ignore_errors=True)
+            shutil.rmtree(PathUtils.get_cwd() / "build", ignore_errors=True)
+            shutil.rmtree(PathUtils.get_cwd() / "dist", ignore_errors=True)
+            print(f"清理成功, 已删除'vebp-build', 'build', 'dist'")
+        except Exception as e:
+            print(f"\n{str(e)}", file=sys.stderr)
+
         return self
 
     def __repr__(self):

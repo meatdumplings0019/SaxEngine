@@ -33,7 +33,7 @@ class FileStream:
             with open(self._path, 'w') as file:
                 file.write(value)
             return True
-        except Exception:
+        except FileNotFoundError:
             return False
 
     def read(self) -> Any:
@@ -42,7 +42,7 @@ class FileStream:
         try:
             with open(self._path, 'r') as file:
                 return file.read()
-        except Exception:
+        except FileNotFoundError:
             return None
 
     def exists(self) -> bool:
@@ -128,12 +128,11 @@ class FolderStream:
     def path(self) -> str:
         return self._path
 
-    def create(self) -> bool:
-        try:
-            os.makedirs(self._path, exist_ok=True)
-            return True
-        except Exception as e:
-            return False
+    def create(self):
+        os.makedirs(self._path, exist_ok=True)
+
+    def delete(self):
+        shutil.rmtree(self._path, ignore_errors=True)
 
     def isExists(self) -> bool:
         return os.path.exists(self._path) and os.path.isdir(self._path)
