@@ -1,8 +1,8 @@
 ﻿from colorama import Fore, Style
 
+from src.Vebp import __version__
 from src.Vebp.CMD.build import cmd_build
 from src.Vebp.CMD.exit import cmd_exit
-from src.Vebp import __version__
 from src.Vebp.CMD.init import cmd_init
 from src.Vebp.CMD.tool import error
 

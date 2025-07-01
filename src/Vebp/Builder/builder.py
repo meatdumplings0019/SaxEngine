@@ -3,10 +3,12 @@ import shutil
 import subprocess
 import sys
 import platform
+
 from pathlib import Path
 from typing import Dict, List, Union
-from src.Libs.path import PathUtils
+
 from src.Libs.file import FileStream, FolderStream
+from src.Libs.path import PathUtils
 from src.Vebp.Builder import BaseBuilder
 from src.Vebp.Data.build_config import BuildConfig
 from src.Vebp.Data.config import Config
