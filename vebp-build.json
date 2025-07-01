@@ -1,6 +1,6 @@
 {
   "main": "run.py",
-  "console": true,
+  "console": false,
   "assets": [],
   "in_assets": [],
   "sub_project": [
