@@ -1,7 +1,6 @@
-﻿class App:
-    def __init__(self):
-        ...
+﻿from src.Application import Application
 
-    def run(self):
-        while True:
-            ...
+
+class App(Application):
+    def __init__(self):
+        super().__init__()
