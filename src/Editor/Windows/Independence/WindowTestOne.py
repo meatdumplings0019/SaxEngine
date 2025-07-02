@@ -1,4 +1,6 @@
 ﻿from pygame import Surface
+
+from src.Color import MColor
 from src.InputSystem import InputAction
 from src.InputSystem.KeyCode import KeyCode
 from src.Libs.display import Display
@@ -17,6 +19,6 @@ class WindowTestOne(IndependenceWindow):
     def render(self):
         super().render()
         font = Surface(Display.get_global_size(400, 400))
-        font.fill("Blue")
+        font.fill(MColor("Blue").to())
         rect = font.get_rect(topleft=(0, 0))
         self.surface_display.blit(font, rect)
