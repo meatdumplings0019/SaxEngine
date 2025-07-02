@@ -1,5 +1,6 @@
 ﻿import src.Editor
 import src.Libs
 import src.Application
-import src.error
+import src.ErrorWindow
 import src.Launcher
+import src.Manager
