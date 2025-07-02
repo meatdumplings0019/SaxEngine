@@ -1,5 +1,5 @@
 ﻿import sys
-from src.error import ErrorWindow
+from src.ErrorWindow import ErrorWindow
 
 
 def launch(func):

@@ -1,5 +1,5 @@
 ﻿from src.Editor import App
-from src.launcher import launch
+from src.Launcher import launch
 
 
 @launch
