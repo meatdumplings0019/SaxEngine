@@ -9,15 +9,15 @@ class InputAction:
         self.event = event
 
     @property
-    def Quit(self) -> bool:
+    def quit(self) -> bool:
         return self.event.type == pygame.QUIT
 
     @property
-    def MouseMotion(self) -> bool:
+    def mouseMotion(self) -> bool:
         return self.event.type == KeyCode.MOUSEMOTION.value
 
     @property
-    def MousePosition(self) -> vec2:
+    def mousePosition(self) -> vec2:
         return self.GetMousePosition()
 
     @staticmethod

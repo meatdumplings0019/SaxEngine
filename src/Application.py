@@ -19,7 +19,7 @@ class Application:
 
     def handle_events(self):
         for event in self.input_system.Get():
-            if event.Quit:
+            if event.quit:
                 Tool.exit()
 
     def update(self):
