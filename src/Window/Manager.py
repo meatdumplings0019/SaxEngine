@@ -89,11 +89,14 @@ class WindowManager(Manager):
     def exit(self) -> None:
         self.current_window.exit()
 
+    def update_surface(self):
+        self.current_window.update_surface()
+
     def set_window_size(self):
         pygame.display.set_mode((self.current_window.width, self.current_window.height), self.current_window.window_state)
         pygame.display.set_caption(self.current_window.title)
 
-        self.current_window.update_surface()
+        self.update_surface()
 
     def fullscreen(self):
         if self.current_window.is_fullscreen:

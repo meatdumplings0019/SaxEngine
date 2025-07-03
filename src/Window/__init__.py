@@ -3,6 +3,7 @@
 
 class Window(BaseSurface):
     def __init__(self, width=0, height=0, title="Window", icon=None):
+        super().__init__()
         self.manager = None
         self.s_width = width
         self.s_height = height

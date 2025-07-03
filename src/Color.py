@@ -1,4 +1,6 @@
-﻿import pygame
+﻿from typing import Any
+
+import pygame
 import colorsys
 import re
 

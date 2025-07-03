@@ -1,7 +1,15 @@
-﻿from src.InputSystem import InputAction
+﻿import pygame
+
+from src.InputSystem import InputAction
 
 
 class BaseSurface:
+    def __init__(self):
+        self.surface_display = pygame.display.get_surface()
+
+    def update_surface(self) -> None:
+        self.surface_display = pygame.display.get_surface()
+
     def enter(self): ...
     def exit(self): ...
     def update(self): ...
