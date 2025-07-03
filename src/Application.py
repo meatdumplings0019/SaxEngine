@@ -18,7 +18,6 @@ class Application:
 
         self.surface_display = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
-        raise
 
     def window_init(self) -> None: ...
 
