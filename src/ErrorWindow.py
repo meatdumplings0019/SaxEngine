@@ -3,6 +3,9 @@ import traceback
 import pyperclip
 from datetime import datetime
 
+from src.Color import MColor
+from src.Data.Fonts import msyh_font
+
 
 class ErrorWindow:
     def __init__(self, exception, width=600, height=400):
@@ -12,16 +15,16 @@ class ErrorWindow:
 
         # 颜色配置
         self.theme = {
-            'background': (45, 45, 48),
-            'primary': (0, 122, 204),
-            'secondary': (100, 100, 100),
-            'text': (240, 240, 240),
-            'warning': (255, 153, 0)
+            'background': MColor(45, 45, 48),
+            'primary': MColor(0, 122, 204),
+            'secondary': MColor(100, 100, 100),
+            'text': MColor(240, 240, 240),
+            'warning': MColor(255, 153, 0)
         }
 
-        self.title_font = pygame.font.SysFont("msyh", 24)
-        self.text_font = pygame.font.SysFont("msyh", 18)
-        self.small_font = pygame.font.SysFont("msyh", 14)
+        self.title_font = msyh_font.render(48)
+        self.text_font = msyh_font.render(40)
+        self.small_font = msyh_font.render(32)
 
         self.exception = exception
         self.error_type = type(exception).__name__
@@ -101,11 +104,11 @@ class ErrorWindow:
 
         for line in content.split('\n'):
             if "Time" in line:
-                text = self.small_font.render(line, True, self.theme['secondary'])
+                text = self.small_font.render(line, self.theme['secondary'])
             elif "Suggestion" in line:
-                text = self.text_font.render(line, True, self.theme['warning'])
+                text = self.text_font.render(line, self.theme['warning'])
             else:
-                text = self.text_font.render(line, True, self.theme['text'])
+                text = self.text_font.render(line, self.theme['text'])
             self.screen.blit(text, (30, y))
             y += line_height
 
@@ -126,16 +129,16 @@ class ErrorWindow:
                             print(f"Error: {e}")
 
     def render_btn(self):
-        pygame.draw.rect(self.screen, self.theme['secondary'], self.panel_rect, border_radius=5)
+        pygame.draw.rect(self.screen, self.theme['secondary'].to(), self.panel_rect, border_radius=5)
 
         btn_color_1 = self.theme['primary']
         btn_color_2 = self.theme["primary"]
 
         # 绘制切换按钮
-        pygame.draw.rect(self.screen, btn_color_1, self.button_rect_1, border_radius=3)
-        pygame.draw.rect(self.screen, btn_color_2, self.button_rect_2, border_radius=3)
-        text_1 = self.text_font.render("Close", True, self.theme['text'])
-        text_2 = self.text_font.render("Copy", True, self.theme['text'])
+        pygame.draw.rect(self.screen, btn_color_1.to(), self.button_rect_1, border_radius=3)
+        pygame.draw.rect(self.screen, btn_color_2.to(), self.button_rect_2, border_radius=3)
+        text_1 = self.text_font.render("Close", self.theme['text'])
+        text_2 = self.text_font.render("Copy", self.theme['text'])
         text_rect_1 = text_1.get_rect(center=self.button_rect_1.center)
         text_rect_2 = text_2.get_rect(center=self.button_rect_2.center)
         self.screen.blit(text_1, text_rect_1)
@@ -143,9 +146,9 @@ class ErrorWindow:
 
     def main_loop(self):
         while self.running:
-            self.screen.fill(self.theme['background'])
+            self.screen.fill(self.theme['background'].to())
 
-            title = self.title_font.render("Error!", True, self.theme['text'])
+            title = self.title_font.render("Error!", self.theme['text'])
             self.screen.blit(title, (30, 20))
 
             self.draw_main_content()

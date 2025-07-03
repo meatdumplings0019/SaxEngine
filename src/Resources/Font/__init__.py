@@ -1,22 +1,15 @@
 ﻿import pygame
 from typing import Any
-from pygame import font as pyfont, Surface
+
 from src.Libs.display import Display
-from src.Libs.types import color_type
 from src.Resources import Resource
+from src.Resources.Font.Assets import FontAssets
 
-class FontAssets:
-    def __init__(self, font: pyfont.Font) -> None:
-        self.font = font
-
-    def render(self, text: str, color: color_type = "white", bg: color_type | None = None) -> Surface:
-        pygame.init()
-        return self.font.render(text, True, color, bg)
 
 class FontResource(Resource):
     @staticmethod
     def __load_func(path, size):
-        return pyfont.Font(path, size)
+        return pygame.font.Font(path, size)
 
     def __init__(self, path) -> None:
         self.font_size = 0
