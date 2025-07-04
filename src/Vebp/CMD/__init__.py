@@ -8,13 +8,13 @@ from src.Vebp.CMD.tool import error
 
 
 class CMD:
-    def __init__(self):
+    def __init__(self) -> None:
         self.input = ""
 
-    def _get_input(self):
+    def _get_input(self) -> None:
         self.input = input(f"{Fore.MAGENTA}>>> ")
 
-    def _compile(self):
+    def _compile(self) -> None:
         command, *args = self.input.split(" ")
         # noinspection PyUnreachableCode
         match command:
@@ -27,7 +27,7 @@ class CMD:
             case other:
                 error(f"Unknown command {other}")
 
-    def run(self):
+    def run(self) -> None:
         print(f"Vebp {__version__}")
         print('Type "help", "copyright", "credits" or "license" for more information.')
 

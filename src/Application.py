@@ -23,20 +23,20 @@ class Application:
 
     def window_init(self) -> None: ...
 
-    def handle_events(self):
+    def handle_events(self) -> None:
         for event in self.input_system.Get():
             if event.quit:
                 Tool.exit()
             self.window_manager.handle_event(event)
 
-    def update(self):
+    def update(self) -> None:
         self.clock.tick(60)
         self.surface_display.fill("black")
         self.window_manager.update()
         self.window_manager.render()
         pygame.display.update()
 
-    def run(self):
+    def run(self) -> None:
         self.window_manager.enter()
         while True:
             self.handle_events()

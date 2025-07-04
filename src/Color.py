@@ -1,4 +1,4 @@
-﻿from typing import Any
+﻿from typing import Iterator
 
 import pygame
 import colorsys
@@ -6,7 +6,7 @@ import re
 
 
 class MColor:
-    def __init__(self, *args):
+    def __init__(self, *args) -> None:
         """
         创建增强版颜色对象，支持多种输入格式：\n
         1. RGB 元组: (255, 100, 50)
@@ -57,124 +57,124 @@ class MColor:
 
     # 基本颜色属性
     @property
-    def r(self):
+    def r(self) -> int:
         """红色分量 (0-255)"""
         return self._pygame_color.r
 
     @r.setter
-    def r(self, value):
+    def r(self, value) -> None:
         self._pygame_color.r = max(0, min(255, value))
 
     @property
-    def g(self):
+    def g(self) -> int:
         """绿色分量 (0-255)"""
         return self._pygame_color.g
 
     @g.setter
-    def g(self, value):
+    def g(self, value) -> None:
         self._pygame_color.g = max(0, min(255, value))
 
     @property
-    def b(self):
+    def b(self) -> int:
         """蓝色分量 (0-255)"""
         return self._pygame_color.b
 
     @b.setter
-    def b(self, value):
+    def b(self, value) -> None:
         self._pygame_color.b = max(0, min(255, value))
 
     @property
-    def a(self):
+    def a(self) -> int:
         """透明度分量 (0-255)"""
         return self._pygame_color.a
 
     @a.setter
-    def a(self, value):
+    def a(self, value) -> None:
         self._pygame_color.a = max(0, min(255, value))
 
     @property
-    def rgb(self):
+    def rgb(self) -> tuple[int, int, int]:
         """RGB元组 (r, g, b)"""
         return self.r, self.g, self.b
 
     @property
-    def rgba(self):
+    def rgba(self) -> tuple[int, int, int, int]:
         """RGBA元组 (r, g, b, a)"""
         return self.r, self.g, self.b, self.a
 
     @property
-    def normalized_rgba(self):
+    def normalized_rgba(self) -> tuple[float, float, float, float]:
         """归一化的RGBA值 (0.0-1.0)"""
         return self.r / 255.0, self.g / 255.0, self.b / 255.0, self.a / 255.0
 
     # 颜色空间转换
     @property
-    def hsl(self):
+    def hsl(self) -> tuple[float, float, float]:
         """HSL元组 (h, s, l) 所有值在0.0-1.0之间"""
         r, g, b = [x / 255.0 for x in self.rgb]
         h, l, s = colorsys.rgb_to_hls(r, g, b)
         return h, s, l
 
     @hsl.setter
-    def hsl(self, value):
+    def hsl(self, value) -> None:
         h, s, l = value
         r, g, b = [int(x * 255) for x in colorsys.hls_to_rgb(h, l, s)]
         self._pygame_color = pygame.Color(r, g, b, self.a)
 
     @property
-    def hsv(self):
+    def hsv(self) -> tuple[float, float, float]:
         """HSV元组 (h, s, v) 所有值在0.0-1.0之间"""
         r, g, b = [x / 255.0 for x in self.rgb]
         h, s, v = colorsys.rgb_to_hsv(r, g, b)
         return h, s, v
 
     @hsv.setter
-    def hsv(self, value):
+    def hsv(self, value) -> None:
         h, s, v = value
         r, g, b = [int(x * 255) for x in colorsys.hsv_to_rgb(h, s, v)]
         self._pygame_color = pygame.Color(r, g, b, self.a)
 
     # 颜色操作
-    def lighten(self, amount):
+    def lighten(self, amount) -> "MColor":
         """增加亮度 (0.0-1.0)"""
         h, s, l = self.hsl
         new_l = min(1.0, l + amount)
         self.hsl = (h, s, new_l)
         return self
 
-    def darken(self, amount):
+    def darken(self, amount) -> "MColor":
         """降低亮度 (0.0-1.0)"""
         h, s, l = self.hsl
         new_l = max(0.0, l - amount)
         self.hsl = (h, s, new_l)
         return self
 
-    def saturate(self, amount):
+    def saturate(self, amount) -> "MColor":
         """增加饱和度 (0.0-1.0)"""
         h, s, l = self.hsl
         new_s = min(1.0, s + amount)
         self.hsl = (h, new_s, l)
         return self
 
-    def desaturate(self, amount):
+    def desaturate(self, amount) -> "MColor":
         """降低饱和度 (0.0-1.0)"""
         h, s, l = self.hsl
         new_s = max(0.0, s - amount)
         self.hsl = (h, new_s, l)
         return self
 
-    def adjust_hue(self, amount):
+    def adjust_hue(self, amount) -> "MColor":
         """调整色相 (0.0-1.0)"""
         h, s, l = self.hsl
         new_h = (h + amount) % 1.0
         self.hsl = (new_h, s, l)
         return self
 
-    def complement(self):
+    def complement(self) -> "MColor":
         """返回补色"""
         return self.copy().adjust_hue(0.5)
 
-    def blend(self, other_color, factor=0.5):
+    def blend(self, other_color, factor=0.5) -> "MColor":
         """混合两种颜色 (factor=0.0 返回当前颜色, 1.0 返回另一个颜色)"""
         factor = max(0.0, min(1.0, factor))
         r = int(self.r * (1 - factor) + other_color.r * factor)
@@ -184,53 +184,53 @@ class MColor:
         return MColor(r, g, b, a)
 
     # 实用方法
-    def copy(self):
+    def copy(self) -> "MColor":
         """创建颜色的副本"""
         return MColor(self.r, self.g, self.b, self.a)
 
-    def to_hex(self, with_alpha=False):
+    def to_hex(self, with_alpha=False) -> str:
         """返回十六进制颜色代码"""
         if with_alpha:
             return f"#{self.r:02x}{self.g:02x}{self.b:02x}{self.a:02x}"
         return f"#{self.r:02x}{self.g:02x}{self.b:02x}"
 
-    def to(self):
+    def to(self) -> pygame.Color:
         """转换为原生Pygame颜色对象"""
         return pygame.Color(self.r, self.g, self.b, self.a)
 
     # 兼容Pygame的Color
     @staticmethod
-    def from_name(name):
+    def from_name(name) -> "MColor":
         """从颜色名称创建颜色对象"""
         return MColor(name)
 
     # 常用颜色作为类属性
     @staticmethod
-    def from_hex(hex_value):
+    def from_hex(hex_value) -> "MColor":
         """从十六进制值创建颜色对象"""
         return MColor(hex_value)
 
     @staticmethod
-    def from_hsl(h, s, l):
+    def from_hsl(h, s, l) -> "MColor":
         """从HSL值创建颜色对象"""
         color = MColor(0, 0, 0)
         color.hsl = (h, s, l)
         return color
 
     @staticmethod
-    def from_hsv(h, s, v):
+    def from_hsv(h, s, v) -> "MColor":
         """从HSV值创建颜色对象"""
         color = MColor(0, 0, 0)
         color.hsv = (h, s, v)
         return color
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"EnhancedColor(r={self.r}, g={self.g}, b={self.b}, a={self.a})"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """支持与Pygame颜色对象的比较"""
         if isinstance(other, MColor):
             return self.rgba == other.rgba
@@ -243,11 +243,11 @@ class MColor:
             return self.r == other[0] and self.g == other[1] and self.b == other[2] and self.a == other[3]
         return False
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[tuple[int, int, int, int]]:
         """支持解包为(r, g, b, a)"""
         return iter((self.r, self.g, self.b, self.a))
 
-    def __getitem__(self, index):
+    def __getitem__(self, index) -> int:
         """支持索引访问[r, g, b, a]"""
         if index == 0: return self.r
         if index == 1: return self.g
@@ -255,14 +255,14 @@ class MColor:
         if index == 3: return self.a
         raise IndexError("Color index out of range. Valid indices: 0-3")
 
-    def __len__(self):
+    def __len__(self) -> int:
         """支持len()函数"""
         return 4
 
-    def __enter__(self):
+    def __enter__(self) -> pygame.Color:
         """支持上下文管理器，返回原生Pygame颜色"""
         return self.to()
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
         """上下文管理器退出时不做特殊处理"""
         pass

@@ -4,7 +4,7 @@ from src.Vebp.Data.config import Config
 from src.Vebp.Data.package import Package
 
 
-def cmd_init(args):
+def cmd_init(args) -> bool:
     if len(args) > 1:
         error(f"Only 1 args, but has {len(args)} arguments.")
         return False

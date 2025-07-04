@@ -3,5 +3,5 @@
 
 class WindowUtils:
     @staticmethod
-    def center():
+    def center() -> None:
         os.environ['SDL_VIDEO_CENTERED'] = '1'

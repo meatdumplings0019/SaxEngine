@@ -9,7 +9,7 @@ from src.Resources.Font import FontAssets
 
 class SysFontResource(Resource):
     @staticmethod
-    def __load_func(font, size):
+    def __load_func(font, size) -> pygame.font.Font:
         return pygame.font.SysFont(font, size)
 
     def __init__(self, font) -> None:

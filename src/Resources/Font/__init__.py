@@ -8,7 +8,7 @@ from src.Resources.Font.Assets import FontAssets
 
 class FontResource(Resource):
     @staticmethod
-    def __load_func(path, size):
+    def __load_func(path, size) -> pygame.font.Font:
         return pygame.font.Font(path, size)
 
     def __init__(self, path) -> None:

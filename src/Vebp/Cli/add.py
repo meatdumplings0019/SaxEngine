@@ -1,6 +1,6 @@
 ﻿class CliAdd:
     @staticmethod
-    def add_build_command(subparsers):
+    def add_build_command(subparsers) -> None:
         build_parser = subparsers.add_parser(
             'build',
             help='构建可执行文件',
@@ -33,7 +33,7 @@
                                   help='内部资源: "源路径;目标相对路径" (嵌入到可执行文件中)')
 
     @staticmethod
-    def add_init_command(subparsers):
+    def add_init_command(subparsers) -> None:
         init_parser = subparsers.add_parser(
             'init',
             help='初始化项目配置',
@@ -50,7 +50,7 @@
                                   help='生成路径')
 
     @staticmethod
-    def add_pack_command(subparsers):
+    def add_pack_command(subparsers) -> None:
         pack_parser = subparsers.add_parser(
             'pack',
             help='构建python包',
@@ -58,7 +58,7 @@
         )
 
     @staticmethod
-    def add_package_command(subparsers):
+    def add_package_command(subparsers) -> None:
         subparsers.add_parser(
             'package',
             help='显示 package 配置详情',

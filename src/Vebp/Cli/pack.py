@@ -1,4 +1,4 @@
 ﻿class CliPack:
     @staticmethod
-    def handle():
+    def handle() -> None:
         print("Pack")

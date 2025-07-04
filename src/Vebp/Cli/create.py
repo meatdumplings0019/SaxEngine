@@ -5,7 +5,7 @@ from src.Vebp.Cli.add import CliAdd
 
 class CliCreate:
     @staticmethod
-    def create():
+    def create() -> argparse.ArgumentParser:
         parser = argparse.ArgumentParser(
             description='vebp - 增强的 PyInstaller 打包工具',
             formatter_class=argparse.RawDescriptionHelpFormatter,

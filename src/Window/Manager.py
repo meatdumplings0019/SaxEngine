@@ -1,12 +1,14 @@
 ﻿import pygame
+
 from src.InputSystem import InputAction
-from src.Libs.resolution import Resolution
+from src.Libs.resolution import resolution
 from src.Libs.util import Message
 from src.Manager import Manager
 from src.Window import Window
 from src.Window.DefaultWindow import DefaultWindow
 from src.Window.EmptyWindow import EmptyWindow
 from src.Window.IndependenceWindow import IndependenceWindow
+
 
 class WindowManager(Manager):
     def __init__(self) -> None:
@@ -47,7 +49,7 @@ class WindowManager(Manager):
         except Exception as e:
             return Message(DefaultWindow(), e)
 
-    def init(self):
+    def init(self) -> None:
         if not self.windows:
             self.add("empty", EmptyWindow())
 
@@ -89,21 +91,21 @@ class WindowManager(Manager):
     def exit(self) -> None:
         self.current_window.exit()
 
-    def update_surface(self):
+    def update_surface(self) -> None:
         self.current_window.update_surface()
 
-    def set_window_size(self):
+    def set_window_size(self) -> None:
         pygame.display.set_mode((self.current_window.width, self.current_window.height), self.current_window.window_state)
         pygame.display.set_caption(self.current_window.title)
 
         self.update_surface()
 
-    def fullscreen(self):
+    def fullscreen(self) -> None:
         if self.current_window.is_fullscreen:
             self.current_window.return_size()
             self.current_window.window_state = 0
         else:
-            self.current_window.width, self.current_window.height = Resolution.windowResolution
+            self.current_window.width, self.current_window.height = resolution.windowResolution
             self.current_window.window_state = pygame.NOFRAME
 
         self.current_window.is_fullscreen = not self.current_window.is_fullscreen

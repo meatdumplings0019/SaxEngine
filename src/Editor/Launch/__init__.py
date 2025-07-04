@@ -3,6 +3,6 @@ from src.Launcher import launch
 
 
 @launch
-def run():
+def run() -> None:
     app = App()
     app.run()

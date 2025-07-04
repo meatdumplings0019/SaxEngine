@@ -4,6 +4,6 @@ from pygame import quit
 
 class Tool:
     @staticmethod
-    def exit():
+    def exit() -> None:
         quit()
         sys_exit()

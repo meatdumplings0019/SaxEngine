@@ -16,7 +16,7 @@ class WindowTestOne(IndependenceWindow):
         if event.IsKeyDown(KeyCode.K_2):
             self.manager.switch("test2")
 
-    def render(self):
+    def render(self) -> None:
         super().render()
         font = Surface(Display.get_global_size(400, 400))
         font.fill(MColor("Blue").to())

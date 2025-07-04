@@ -7,7 +7,7 @@ from src.Vebp.Builder.builder import Builder
 
 class CliBuild:
     @staticmethod
-    def handle(args):
+    def handle(args) -> None:
         try:
             builder = Builder.from_package()
 

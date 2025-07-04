@@ -9,10 +9,10 @@ from src.Vebp.CMD import CMD
 
 
 class CLI:
-    def __init__(self):
+    def __init__(self) -> None:
         self.parser = CliCreate.create()
 
-    def run(self, args=None):
+    def run(self, args=None) -> None:
 
         if len(sys.argv) == 1:
             cmd = CMD()

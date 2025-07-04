@@ -4,7 +4,7 @@ from src.InputSystem.InputAction import InputAction
 
 
 class InputSystem:
-    def __init__(self):
+    def __init__(self) -> None:
         self.event = None
 
     def Get(self) -> Generator[InputAction, Any, None]:

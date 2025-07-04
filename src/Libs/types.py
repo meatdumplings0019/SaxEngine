@@ -10,7 +10,8 @@ ColorType = Union[
     Tuple[int, int, int, int],     # RGBA
     pygame.Color,                  # Pygame 原生颜色
     MColor,                        # 增强颜色对象
-    str                            # 颜色名称或十六进制值
+    str,                           # 颜色名称或十六进制值
+    None
 ]
 
 vec2 = Vector2

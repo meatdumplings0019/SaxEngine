@@ -1,6 +1,6 @@
 ﻿class CliPackage:
     @staticmethod
-    def handle():
+    def handle() -> None:
         print("显示 package 配置详情...\n")
 
         print("\n说明:")

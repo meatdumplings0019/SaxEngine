@@ -8,7 +8,7 @@ from src.Vebp.Data.package import Package
 
 class CliInit:
     @staticmethod
-    def handle(args):
+    def handle(args) -> bool:
         print("正在初始化 VEBP 项目...")
 
         path = getattr(args, 'path', ".")

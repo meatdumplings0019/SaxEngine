@@ -3,7 +3,7 @@ import os
 import shutil
 
 from pathlib import Path
-from typing import Iterator, Any
+from typing import Iterator, Any, Union
 
 
 class FileStream:
@@ -22,32 +22,32 @@ class FileStream:
     def suffix(self) -> str:
         return self._path.suffix
 
-    def create(self, value: str = "") -> bool:
+    @property
+    def exists(self) -> bool:
+        return self._path.exists()
+
+    def create(self, value: str = "") -> "FileStream":
         if not self._path.exists():
             self.write(value)
-            return True
 
-        return False
+        return self
 
-    def write(self, value: str) -> bool:
-        try:
-            with open(self._path, 'w') as file:
-                file.write(value)
-            return True
-        except FileNotFoundError:
-            return False
+    def write(self, value: str) -> "FileStream":
+        if not self.exists:
+            return self
+
+        with open(self._path, 'w') as file:
+            file.write(value)
+        return self
 
     def read(self) -> Any:
-        if not self.exists(): return None
+        if not self.exists: return None
 
         try:
             with open(self._path, 'r') as file:
                 return file.read()
         except FileNotFoundError:
             return None
-
-    def exists(self) -> bool:
-        return self._path.exists()
 
     def is_name(self, name) -> bool:
         return self._path.name == name
@@ -61,7 +61,7 @@ class FileStream:
             json.dump(data, file, indent=2)
 
     @staticmethod
-    def abs(source) -> str | None:
+    def abs(source) -> Union[str, None]:
         if isinstance(source, FileStream):
             return os.path.abspath(source.path)
         elif isinstance(source, str):
@@ -70,7 +70,7 @@ class FileStream:
             return None
 
     @staticmethod
-    def copy(source, destination):
+    def copy(source, destination) -> Union["FileStream", None]:
         src_path = FileStream.abs(source)
 
         if not os.path.isfile(src_path):
@@ -129,17 +129,20 @@ class FolderStream:
     def path(self) -> str:
         return self._path
 
-    def create(self):
-        os.makedirs(self._path, exist_ok=True)
-
-    def delete(self):
-        shutil.rmtree(self._path, ignore_errors=True)
-
-    def isExists(self) -> bool:
+    @property
+    def exists(self) -> bool:
         return os.path.exists(self._path) and os.path.isdir(self._path)
 
-    def walk(self) -> DirectoryInfo | None:
-        if not self.isExists(): return None
+    def create(self) -> "FolderStream":
+        os.makedirs(self._path, exist_ok=True)
+        return self
+
+    def delete(self) -> "FolderStream":
+        shutil.rmtree(self._path, ignore_errors=True)
+        return self
+
+    def walk(self) -> Union[DirectoryInfo, None]:
+        if not self.exists: return None
 
         folders = []
         files = []
@@ -158,7 +161,7 @@ class FolderStream:
         return DirectoryInfo(self._path, folders, files)
 
     @staticmethod
-    def abs(source) -> str | None:
+    def abs(source) -> Union[str, None]:
         if isinstance(source, FolderStream):
             return os.path.abspath(source.path)
         elif isinstance(source, str):

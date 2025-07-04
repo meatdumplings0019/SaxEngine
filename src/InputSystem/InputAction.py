@@ -5,7 +5,7 @@ from src.Libs.types import vec2
 
 
 class InputAction:
-    def __init__(self, event: pygame.event.Event):
+    def __init__(self, event: pygame.event.Event) -> None:
         self.event = event
 
     @property
