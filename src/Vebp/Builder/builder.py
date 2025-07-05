@@ -10,12 +10,14 @@ from src.Libs.file import FileStream, FolderStream
 from src.Libs.path import MPath_
 from src.Vebp.Builder import BaseBuilder
 from src.Vebp.Data.build_config import BuildConfig
+from src.Vebp.Data.globals import get_config
 from src.Vebp.Data.package import Package
+from src.Vebp.Plugin.globals import get_plugin_manager
 
 
 class Builder(BaseBuilder):
-    def __init__(self, name=None, icon=None, config_path=".", parent_path=None, sub=None, base_path=".") -> None:
-        super().__init__(name, base_path, config_path)
+    def __init__(self, name=None, icon=None, parent_path=None, sub=None, base_path=".") -> None:
+        super().__init__(name, base_path)
         self._icon = Path(icon) if icon else None
         self._script_path = None
         self._console = False
@@ -74,7 +76,7 @@ class Builder(BaseBuilder):
         self._auto_run = value
 
     @staticmethod
-    def from_package(folder_path = None, sub=None, parent=None, base_path=".", config_path=".") -> Optional["Builder"]:
+    def from_package(folder_path = None, sub=None, parent=None, base_path=".") -> Optional["Builder"]:
         if folder_path:
             folder_path = Path(str(folder_path))
             build_config = BuildConfig(folder_path / BuildConfig.FILENAME)
@@ -87,7 +89,7 @@ class Builder(BaseBuilder):
         if not build_config or not package_config:
             return None
 
-        builder = Builder(package_config.get('name', None), sub=sub, parent_path=parent, base_path=base_path, config_path=config_path)
+        builder = Builder(package_config.get('name', None), sub=sub, parent_path=parent, base_path=base_path)
         builder.venv = package_config.get('venv', '.venv')
 
         builder.set_script(build_config.get('main', None))
@@ -115,7 +117,7 @@ class Builder(BaseBuilder):
             for pro in sub_pro:
                 builder.add_sub_project(pro.get("path", "sub_project"), pro.get("script", None))
 
-        auto_run = builder.config.get('autoRun', True)
+        auto_run = get_config().get('autoRun', True)
         builder.auto_run = auto_run
 
         return builder
@@ -358,7 +360,7 @@ class Builder(BaseBuilder):
             return
 
         for key, pro in self.sub_project_src.items():
-            self.sub_project_builder.append(self.from_package(pro, key, self._project_dir, pro, "."))
+            self.sub_project_builder.append(self.from_package(pro, key, self._project_dir, pro))
 
     def _build_sub_project(self) -> None:
         for pro in self.sub_project_builder:

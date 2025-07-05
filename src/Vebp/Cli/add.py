@@ -73,3 +73,13 @@
             description='执行 vebp-package.json 中 scripts 部分定义的命令'
         )
         run_parser.add_argument('script', help='要运行的脚本名称')
+
+    @staticmethod
+    def add_plugin_command(subparsers) -> None:
+        plugin_parser = subparsers.add_parser(
+            'plugin',
+            help="Plugin Tool",
+            description='vebp-build.json plugins'
+        )
+        plugin_parser.add_argument('--list', '-l', action='store_true',
+                                 help='获得所有插件介绍')

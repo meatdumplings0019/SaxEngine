@@ -1,12 +1,6 @@
-﻿from pathlib import Path
-
-from src.Vebp.Data.config import Config
+﻿from src.Vebp.Plugin.globals import get_plugin_manager
 
 
 class VebpBase:
-    def __init__(self, config_path):
-        self._config = Config(Path(config_path) / Config.FILENAME)
-
-    @property
-    def config(self) -> Config:
-        return self._config
+    def __init__(self):
+        get_plugin_manager().load_plugins("plugins")

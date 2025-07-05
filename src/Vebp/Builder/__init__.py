@@ -6,8 +6,8 @@ from src.Vebp.Base import VebpBase
 
 
 class BaseBuilder(VebpBase):
-    def __init__(self, name=None, base_path=".", config_path=".") -> None:
-        super().__init__(config_path)
+    def __init__(self, name=None, base_path=".") -> None:
+        super().__init__()
         self._name = name
         self._base_path = Path(base_path)
         self._venv = ".venv"
