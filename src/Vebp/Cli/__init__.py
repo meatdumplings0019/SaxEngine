@@ -6,6 +6,7 @@ from src.Vebp.Cli.init import CliInit
 from src.Vebp.Cli.pack import CliPack
 from src.Vebp.Cli.package import CliPackage
 from src.Vebp.CMD import CMD
+from src.Vebp.Cli.dev import CliDev
 
 
 class CLI:
@@ -29,5 +30,7 @@ class CLI:
             CliPackage.handle()
         elif parsed_args.command == 'pack':
             CliPack.handle()
+        elif parsed_args.command == 'dev':
+            CliDev.handle(parsed_args)
         else:
             sys.exit(0)

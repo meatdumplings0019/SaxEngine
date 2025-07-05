@@ -1,7 +1,7 @@
 from typing import Any
 
 from src.Libs.file import FileStream
-from src.Libs.path import mPath
+from src.Libs.path import MPath_
 
 
 class VebpData:
@@ -25,7 +25,7 @@ class VebpData:
 
     @classmethod
     def create(cls, path, overwrite=False) -> bool:
-        file_path = FileStream(mPath.cwd / path / cls.FILENAME)
+        file_path = FileStream(MPath_.cwd / path / cls.FILENAME)
 
         if file_path.exists and not overwrite:
             print(f"{cls.FILENAME} 已存在。使用 --force 覆盖。")

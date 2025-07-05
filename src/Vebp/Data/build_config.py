@@ -7,6 +7,6 @@ class BuildConfig(VebpData):
     @staticmethod
     def generate_default() -> dict:
         return {
-            "main": "run.py",
+            "main": "dev.py",
             "console": False
         }

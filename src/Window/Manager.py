@@ -1,7 +1,7 @@
 ﻿import pygame
 
 from src.InputSystem import InputAction
-from src.Libs.resolution import resolution
+from src.Libs.resolution import Resolution_
 from src.Libs.util import Message
 from src.Manager import Manager
 from src.Window import Window
@@ -105,7 +105,7 @@ class WindowManager(Manager):
             self.current_window.return_size()
             self.current_window.window_state = 0
         else:
-            self.current_window.width, self.current_window.height = resolution.windowResolution
+            self.current_window.width, self.current_window.height = Resolution_.windowResolution
             self.current_window.window_state = pygame.NOFRAME
 
         self.current_window.is_fullscreen = not self.current_window.is_fullscreen

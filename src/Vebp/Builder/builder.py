@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Dict, Union
 
 from src.Libs.file import FileStream, FolderStream
-from src.Libs.path import mPath
+from src.Libs.path import MPath_
 from src.Vebp.Builder import BaseBuilder
 from src.Vebp.Data.build_config import BuildConfig
 from src.Vebp.Data.package import Package
@@ -339,7 +339,7 @@ class Builder(BaseBuilder):
             print(f"运行程序失败: {str(e)}", file=sys.stderr)
 
     def _get_venv_python(self) -> Union[str, Path, None]:
-        venv_dir = mPath.cwd / Path(self.venv)
+        venv_dir = MPath_.cwd / Path(self.venv)
 
         if not venv_dir.exists():
             return None
@@ -406,8 +406,8 @@ class Builder(BaseBuilder):
     def clean(self):
         try:
             shutil.rmtree(self._base_output_dir, ignore_errors=True)
-            shutil.rmtree(mPath.cwd / "build", ignore_errors=True)
-            shutil.rmtree(mPath.cwd / "dist", ignore_errors=True)
+            shutil.rmtree(MPath_.cwd / "build", ignore_errors=True)
+            shutil.rmtree(MPath_.cwd / "dist", ignore_errors=True)
             print(f"清理成功, 已删除'vebp-build', 'build', 'dist'")
         except Exception as e:
             print(f"\n{str(e)}", file=sys.stderr)

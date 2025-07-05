@@ -1,7 +1,7 @@
 ﻿from pathlib import Path
 
 from src.Libs.file import FolderStream
-from src.Libs.path import mPath
+from src.Libs.path import MPath_
 from src.Vebp.Base import VebpBase
 
 
@@ -14,7 +14,7 @@ class BaseBuilder(VebpBase):
 
         self._project_dir = None
 
-        self._base_output_dir = mPath.cwd / Path("vebp-build")
+        self._base_output_dir = MPath_.cwd / Path("vebp-build")
         FolderStream(self._base_output_dir).create()
 
     @property

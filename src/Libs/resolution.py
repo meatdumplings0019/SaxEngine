@@ -8,4 +8,4 @@ class Resolution:
         user32 = ctypes.windll.user32
         return vec2(user32.GetSystemMetrics(0), user32.GetSystemMetrics(1))
 
-resolution = Resolution()
+Resolution_ = Resolution()

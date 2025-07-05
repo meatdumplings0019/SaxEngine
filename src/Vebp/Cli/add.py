@@ -64,3 +64,12 @@
             help='显示 package 配置详情',
             description='打印 vebp-build.json 文件的详细属性说明'
         )
+
+    @staticmethod
+    def add_dev_command(subparsers) -> None:
+        run_parser = subparsers.add_parser(
+            'dev',
+            help='运行 package 中定义的脚本',
+            description='执行 vebp-package.json 中 scripts 部分定义的命令'
+        )
+        run_parser.add_argument('script', help='要运行的脚本名称')

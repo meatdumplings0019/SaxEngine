@@ -26,7 +26,9 @@ class CliInit:
             print(f"\n项目 '{project_name}' 初始化成功!")
             print("下一步:")
             print("1. 编辑 vebp-build.json 设置 'main' 属性 (您的入口脚本)")
-            print("2. 运行 'vebp build' 打包您的应用")
+            print("2. 编辑 vebp-package.json 添加自定义脚本到 'scripts' 部分")
+            print("3. 运行 'vebp dev <脚本名>' 执行自定义脚本")
+            print("4. 运行 'vebp build' 打包您的应用")
             return True
 
         print("\n初始化完成但有警告。")

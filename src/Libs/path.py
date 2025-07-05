@@ -63,7 +63,7 @@ class MPath:
         返回:
             Path: 绝对路径
         """
-        base = base_path or mPath.cwd
+        base = base_path or MPath_.cwd
         return Path(os.path.abspath(str(os.path.join(base, relative_path))))
 
     @property
@@ -102,4 +102,4 @@ class MPath:
         file_name, ext = os.path.splitext(base_name)
         return dir_name, file_name, ext
 
-mPath = MPath()
+MPath_ = MPath()

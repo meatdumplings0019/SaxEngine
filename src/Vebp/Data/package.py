@@ -1,4 +1,4 @@
-﻿from src.Libs.path import MPath, mPath
+﻿from src.Libs.path import MPath, MPath_
 from src.Vebp.Data import VebpData
 
 
@@ -7,8 +7,9 @@ class Package(VebpData):
 
     @staticmethod
     def generate_default() -> dict:
-        project_name = mPath.cwd.name
+        project_name = MPath_.cwd.name
         return {
             "name": project_name,
-            "venv": ".venv"
+            "venv": ".venv",
+            "scripts": {}
         }
