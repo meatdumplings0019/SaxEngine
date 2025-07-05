@@ -1,11 +1,12 @@
 import importlib.util
-import json
 import sys
 import tempfile
 import zipfile
 from pathlib import Path
 from typing import Dict, Any, Optional
 
+from src.Libs.file import FolderStream
+from src.Vebp.Data.plugin import PluginConfig
 from src.Vebp.Plugin import Plugin
 
 
@@ -26,9 +27,7 @@ class PluginManager:
         :param plugin_dir: 插件目录路径
         """
         plugin_dir_path = Path(plugin_dir)
-        if not plugin_dir_path.exists():
-            print(f"⚠️ 插件目录不存在: {plugin_dir}")
-            return
+        FolderStream(plugin_dir_path).create()
 
         # 加载ZIP插件
         for zip_file in plugin_dir_path.glob("*.zip"):
@@ -59,31 +58,19 @@ class PluginManager:
         """
         plugin_dir = Path(plugin_path)
 
-        # 1. 读取元数据文件
-        meta_file = plugin_dir / "vebp-plugin.json"
-        if not meta_file.exists():
-            raise FileNotFoundError(f"缺少 vebp-plugin.json 文件")
+        meta = PluginConfig(plugin_dir / PluginConfig.FILENAME)
 
-        try:
-            with open(meta_file, 'r', encoding='utf-8') as f:
-                meta = json.load(f)
-        except json.JSONDecodeError:
-            raise ValueError("vebp-plugin.json 格式错误")
+        namespace = meta.get("namespace", None)
+        author = meta.get("author", "null")
 
-        # 验证必要字段
-        required_fields = ["namespace", "author"]
-        for field in required_fields:
-            if field not in meta:
-                raise ValueError(f"vebp-plugin.json 缺少字段: {field}")
+        if not namespace:
+            print("⚠️ 不是一个插件")
+            return
 
-        namespace = meta["namespace"]
-
-        # 检查是否已加载
         if namespace in self.plugins:
             print(f"⚠️ 插件已加载: {namespace}")
             return
 
-        # 2. 创建插件包
         package_name = f"plugin_{namespace}"
 
         # 如果包已存在，先卸载
@@ -146,15 +133,15 @@ class PluginManager:
         # 4. 创建并存储 Plugin 实例
         plugin = Plugin(
             namespace=namespace,
-            author=meta["author"],
+            author=author,
             module=main_module,
             package_name=package_name,
-            meta=meta
+            meta=meta.file
         )
         self.plugins[namespace] = plugin
         self.package_paths[package_name] = str(plugin_dir)
 
-        print(f"✅ 插件加载成功: {namespace} by {meta['author']}")
+        print(f"✅ 插件加载成功: {namespace} by {author}")
 
     def run_hook(self, namespace: str, hook_name: str, *args, **kwargs) -> Any:
         """

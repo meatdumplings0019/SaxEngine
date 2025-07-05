@@ -25,7 +25,7 @@
 
     @classmethod
     def get_available_commands(cls):
-        """获取所有可用命令映射"""
+        """📋 获取所有可用命令映射"""
         return {
             **cls._builtin_mappings,
             **cls._plugin_mappings

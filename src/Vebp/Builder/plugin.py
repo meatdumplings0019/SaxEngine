@@ -70,31 +70,6 @@ class PluginBuilder:
 
         return True
 
-    def build(self) -> Optional[Path]:
-        """构建插件 ZIP 包"""
-        self.validate()
-
-        # 创建临时构建目录
-        temp_build_dir = self.output_dir / f"_{self.plugin_name}_temp"
-        FolderStream(temp_build_dir).create()
-
-        try:
-            print(f"🔧 开始构建插件: {self.plugin_name}")
-
-            # 复制文件到临时目录
-            self._copy_plugin_files(temp_build_dir)
-
-            # 创建 ZIP 文件
-            zip_filename = f"{self.plugin_name}.zip"
-            zip_path = self.output_dir / zip_filename
-            self._create_zip_archive(temp_build_dir, zip_path)
-
-            print(f"✅ 插件构建完成: {zip_path}")
-            return zip_path
-        finally:
-            # 清理临时目录
-            shutil.rmtree(temp_build_dir, ignore_errors=True)
-
     def _copy_plugin_files(self, target_dir: Path):
         """复制插件文件到目标目录，排除不需要的文件"""
         print(f"📦 准备插件文件...")
@@ -186,3 +161,28 @@ class PluginBuilder:
             return True
 
         return False
+
+    def build(self) -> Optional[Path]:
+        """构建插件 ZIP 包"""
+        self.validate()
+
+        # 创建临时构建目录
+        temp_build_dir = self.output_dir / f"_{self.plugin_name}_temp"
+        FolderStream(temp_build_dir).create()
+
+        try:
+            print(f"🔧 开始构建插件: {self.plugin_name}")
+
+            # 复制文件到临时目录
+            self._copy_plugin_files(temp_build_dir)
+
+            # 创建 ZIP 文件
+            zip_filename = f"{self.plugin_name}.zip"
+            zip_path = self.output_dir / zip_filename
+            self._create_zip_archive(temp_build_dir, zip_path)
+
+            print(f"✅ 插件构建完成: {zip_path}")
+            return zip_path
+        finally:
+            # 清理临时目录
+            shutil.rmtree(temp_build_dir, ignore_errors=True)

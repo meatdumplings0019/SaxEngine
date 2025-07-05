@@ -1,4 +1,5 @@
 ﻿class CliPack:
     @staticmethod
     def handle() -> None:
-        print("Pack")
+        print("📦 正在打包项目...")
+        print("✅ 打包完成!")

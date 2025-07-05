@@ -362,7 +362,6 @@ class Builder(BaseBuilder):
 
         try:
             self._validate()
-            print(f"\n🧩 编译子项目...")
             self._compile_sub_project()
             self._build_sub_project()
             self._start_build(self._get_cmd(python_path))
