@@ -66,6 +66,8 @@ class FileStream:
             return os.path.abspath(source.path)
         elif isinstance(source, str):
             return os.path.abspath(source)
+        elif isinstance(source, Path):
+            return str(source)
         else:
             return None
 
@@ -166,6 +168,8 @@ class FolderStream:
             return os.path.abspath(source.path)
         elif isinstance(source, str):
             return os.path.abspath(source)
+        elif isinstance(source, Path):
+            return str(source)
         else:
             return None
 

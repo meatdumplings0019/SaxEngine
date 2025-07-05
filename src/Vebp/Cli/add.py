@@ -83,3 +83,6 @@
         )
         plugin_parser.add_argument('--list', '-l', action='store_true',
                                  help='获得所有插件介绍')
+        plugin_parser.add_argument('--build', '-b', action='store_true',
+                                   help='打包')
+        plugin_parser.add_argument('--path', '-p')

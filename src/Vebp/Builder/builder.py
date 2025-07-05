@@ -12,14 +12,12 @@ from src.Vebp.Builder import BaseBuilder
 from src.Vebp.Data.build_config import BuildConfig
 from src.Vebp.Data.globals import get_config
 from src.Vebp.Data.package import Package
-from src.Vebp.Plugin.globals import get_plugin_manager
 
 
 class Builder(BaseBuilder):
     def __init__(self, name=None, icon=None, parent_path=None, sub=None, base_path=".") -> None:
         super().__init__(name, base_path)
         self._icon = Path(icon) if icon else None
-        self._script_path = None
         self._console = False
         self._onefile = True
         self._assets: Dict[str, list[Path]] = {}
@@ -46,10 +44,6 @@ class Builder(BaseBuilder):
     @property
     def icon(self) -> Path:
         return self._icon
-
-    @property
-    def script_path(self) -> Path:
-        return self._script_path
 
     @property
     def console(self) -> bool:
@@ -121,11 +115,6 @@ class Builder(BaseBuilder):
         builder.auto_run = auto_run
 
         return builder
-
-    def set_script(self, script_path) -> "Builder":
-        if script_path:
-            self._script_path = self._base_path / Path(script_path)
-        return self
 
     def set_console(self, console) -> "Builder":
         if console:
@@ -205,7 +194,7 @@ class Builder(BaseBuilder):
         if not self._assets:
             return True
 
-        print("\n复制外部资源...")
+        print("\n📦 复制外部资源...")
         success = True
 
         for target_relative, sources in self.assets.items():
@@ -222,7 +211,7 @@ class Builder(BaseBuilder):
                     source_path = source.resolve()
                     dest_path = target_path / source.name
                     if source.is_dir():
-                        print(f"  复制目录: {source} -> {dest_path}")
+                        print(f"  📁 复制目录: {source} -> {dest_path}")
                         if dest_path.exists:
                             shutil.rmtree(dest_path)
 
@@ -242,36 +231,34 @@ class Builder(BaseBuilder):
                                     print(f"    复制文件失败: {src_file} -> {dest_file}", file=sys.stderr)
                                     success = False
                     else:
-                        print(f"  复制文件: {source} -> {dest_path}")
+                        print(f"  📄 复制文件: {source} -> {dest_path}")
                         if not FileStream.copy(str(source_path), str(dest_path)):
                             print(f"    复制文件失败: {source} -> {dest_path}", file=sys.stderr)
                             success = False
                 except Exception as e:
-                    print(f"  复制 {source} 出错: {str(e)}", file=sys.stderr)
+                    print(f"  ❌ 复制 {source} 出错: {str(e)}", file=sys.stderr)
                     success = False
 
         return success
 
     def _print_result(self, target_path) -> None:
-        print(f"\n项目构建成功!")
-        print(f"输出目录: {self._project_dir}")
-        print(f"输出文件: {target_path}")
-
-        print(f"单文件打包: {self.onefile}")
-
-        print(f"显示控制台: {self.console}")
-        print(f"自动运行: {self.auto_run}")
+        print(f"\n🎉 项目构建成功!")
+        print(f"📂 输出目录: {self._project_dir}")
+        print(f"📦 输出文件: {target_path}")
+        print(f"📦 单文件打包: {'✅' if self.onefile else '❌'}")
+        print(f"🖥️ 显示控制台: {'✅' if self.console else '❌'}")
+        print(f"🚀 自动运行: {'✅' if self.auto_run else '❌'}")
 
     def _copy_exe(self, source_path, target_path) -> bool:
         if self.onefile:
             if FileStream.copy(str(source_path), str(target_path)):
-                print(f"  已复制可执行文件到: {target_path}")
+                print(f"  ✅ 已复制可执行文件到: {target_path}")
                 return True
             else:
-                print(f"  复制可执行文件失败: {source_path} -> {target_path}", file=sys.stderr)
+                print(f"  ❌ 复制可执行文件失败: {source_path} -> {target_path}", file=sys.stderr)
                 return False
         else:
-            print(f"  复制目录: {source_path} -> {target_path}")
+            print(f"  📁 复制目录: {source_path} -> {target_path}")
 
             for item in source_path.iterdir():
                 dest_item = target_path / item.name
@@ -286,19 +273,19 @@ class Builder(BaseBuilder):
             return True
 
     def _start_build(self, cmd) -> None:
-        print(f"开始打包项目: {self.name}")
-        print(f"脚本路径: {self.script_path}")
-        print(f"打包模式: {'单文件' if self.onefile else '带依赖的目录'}")
-        print(f"控制台设置: {'显示' if self.console else '隐藏'}")
-        print(f"自动运行: {self.auto_run}")
+        print(f"\n🔨 开始打包项目: {self.name}")
+        print(f"📜 脚本路径: {self.script_path}")
+        print(f"📦 打包模式: {'单文件 ✅' if self.onefile else '带依赖的目录 📁'}")
+        print(f"🖥️ 控制台设置: {'显示 ✅' if self.console else '隐藏 ❌'}")
+        print(f"🚀 自动运行: {'✅' if self.auto_run else '❌'}")
 
         if self.in_assets:
-            print("要嵌入的内部资源:")
+            print("📦 要嵌入的内部资源:")
             for target_relative, sources in self.in_assets.items():
                 for source in sources:
-                    print(f"  {source} -> {target_relative}")
+                    print(f"  ➡️ {source} -> {target_relative}")
 
-        print("打包进行中...")
+        print("⏳ 打包进行中...")
 
         subprocess.run(
             cmd,
@@ -330,9 +317,10 @@ class Builder(BaseBuilder):
     def _run_executable(exe_path: Path) -> None:
         try:
             if not exe_path.exists():
-                print(f"可执行文件不存在: {exe_path}", file=sys.stderr)
+                print(f"❌ 可执行文件不存在: {exe_path}", file=sys.stderr)
                 return
 
+            print(f"🚀 启动程序: {exe_path}")
             if platform.system() == 'Windows':
                 subprocess.Popen([str(exe_path)], creationflags=subprocess.CREATE_NEW_CONSOLE)
             else:
@@ -367,13 +355,14 @@ class Builder(BaseBuilder):
             pro.build()
 
     def build(self) -> bool:
+        super().build()
         python_path = self._get_venv_python()
 
         FolderStream(str(self._project_dir)).create()
 
         try:
             self._validate()
-
+            print(f"\n🧩 编译子项目...")
             self._compile_sub_project()
             self._build_sub_project()
             self._start_build(self._get_cmd(python_path))
@@ -395,24 +384,26 @@ class Builder(BaseBuilder):
                 run_path = target_path / f"{self.name}.exe"
 
             if not self._sub and self._auto_run:
+                print(f"\n🚀 正在启动应用程序...")
                 self._run_executable(run_path)
 
             return copy and assets
         except subprocess.CalledProcessError as e:
-            print(f"\n打包失败! 错误代码: {e.returncode}", file=sys.stderr)
+            print(f"\n❌ 打包失败! 错误代码: {e.returncode}", file=sys.stderr)
             return False
         except Exception as e:
-            print(f"\n{str(e)}", file=sys.stderr)
+            print(f"\n❌ {str(e)}", file=sys.stderr)
             return False
 
     def clean(self):
         try:
+            print(f"\n🧹 正在清理构建文件...")
             shutil.rmtree(self._base_output_dir, ignore_errors=True)
             shutil.rmtree(MPath_.cwd / "build", ignore_errors=True)
             shutil.rmtree(MPath_.cwd / "dist", ignore_errors=True)
-            print(f"清理成功, 已删除'vebp-build', 'build', 'dist'")
+            print(f"✅ 清理成功, 已删除'vebp-build', 'build', 'dist'")
         except Exception as e:
-            print(f"\n{str(e)}", file=sys.stderr)
+            print(f"\n❌ {str(e)}", file=sys.stderr)
 
         return self
 
