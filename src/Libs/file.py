@@ -3,7 +3,7 @@ import os
 import shutil
 
 from pathlib import Path
-from typing import Iterator, Any, Union
+from typing import Iterator, Any, Union, Optional
 
 
 class FileStream:
@@ -61,7 +61,7 @@ class FileStream:
             json.dump(data, file, indent=2)
 
     @staticmethod
-    def abs(source) -> Union[str, None]:
+    def abs(source) -> Optional[str]:
         if isinstance(source, FileStream):
             return os.path.abspath(source.path)
         elif isinstance(source, str):
@@ -70,7 +70,7 @@ class FileStream:
             return None
 
     @staticmethod
-    def copy(source, destination) -> Union["FileStream", None]:
+    def copy(source, destination) -> Optional["FileStream"]:
         src_path = FileStream.abs(source)
 
         if not os.path.isfile(src_path):
@@ -161,7 +161,7 @@ class FolderStream:
         return DirectoryInfo(self._path, folders, files)
 
     @staticmethod
-    def abs(source) -> Union[str, None]:
+    def abs(source) -> Optional[str]:
         if isinstance(source, FolderStream):
             return os.path.abspath(source.path)
         elif isinstance(source, str):

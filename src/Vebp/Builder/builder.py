@@ -4,7 +4,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, Union
+from typing import Dict, Union, Optional
 
 from src.Libs.file import FileStream, FolderStream
 from src.Libs.path import MPath_
@@ -74,7 +74,7 @@ class Builder(BaseBuilder):
         self._auto_run = value
 
     @staticmethod
-    def from_package(folder_path = None, sub=None, parent=None, base_path=".", config_path=".") -> Union["Builder", None]:
+    def from_package(folder_path = None, sub=None, parent=None, base_path=".", config_path=".") -> Optional["Builder"]:
         if folder_path:
             folder_path = Path(str(folder_path))
             build_config = BuildConfig(folder_path / BuildConfig.FILENAME)
@@ -338,7 +338,7 @@ class Builder(BaseBuilder):
         except Exception as e:
             print(f"运行程序失败: {str(e)}", file=sys.stderr)
 
-    def _get_venv_python(self) -> Union[str, Path, None]:
+    def _get_venv_python(self) -> Optional[Union[str, Path]]:
         venv_dir = MPath_.cwd / Path(self.venv)
 
         if not venv_dir.exists():

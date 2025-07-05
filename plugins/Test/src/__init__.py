@@ -1,2 +1,2 @@
 ﻿def run():
-    print(1)
+    print("TEST PLUGINS")

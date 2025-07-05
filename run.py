@@ -1,5 +1,5 @@
 ﻿from src.Editor.Launch import run
-from src.Vebp.Plugin import PluginManager
+from src.Vebp.Plugin.Manager import PluginManager
 
 if __name__ == '__main__':
     # run()
