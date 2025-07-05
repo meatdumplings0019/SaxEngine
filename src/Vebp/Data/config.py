@@ -6,13 +6,15 @@ from src.Vebp.Data import VebpData
 class Config(VebpData):
     FILENAME = "vebp-config.json"
 
-    @staticmethod
-    def generate_default() -> dict:
-        return {}
+    PROP_DICT = {
+        "autoRun": {},
+        "plugins": {},
+    }
 
     @staticmethod
     def default() -> dict[str, Any]:
         return {
-            "autoRun": True
+            "autoRun": True,
+            "plugins": "plugins"
         }
 

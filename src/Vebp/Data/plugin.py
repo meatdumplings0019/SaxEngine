@@ -4,9 +4,13 @@
 class PluginConfig(VebpData):
     FILENAME = "vebp-plugin.json"
 
-    @staticmethod
-    def generate_default() -> dict:
-        return {
-            "namespace": "plugin",
-            "author": "null"
+    PROP_DICT = {
+        "namespace": {
+            "generate": True,
+            "default": "vebp_plugin"
+        },
+        "author": {
+            "generate": True,
+            "default": "Vebp"
         }
+    }

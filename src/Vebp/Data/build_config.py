@@ -4,9 +4,18 @@
 class BuildConfig(VebpData):
     FILENAME = "vebp-build.json"
 
-    @staticmethod
-    def generate_default() -> dict:
-        return {
-            "main": "dev.py",
-            "console": False
-        }
+    PROP_DICT = {
+        "main": {
+            "generate": True,
+            "default": "run.py"
+        },
+        "console": {
+            "generate": True,
+            "default": False,
+        },
+        "icon": {},
+        "onefile": {},
+        "assets": {},
+        "in_assets": {},
+        "sub_project": {}
+    }

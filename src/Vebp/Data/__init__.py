@@ -1,11 +1,15 @@
+import sys
 from typing import Any
 
 from src.Libs.file import FileStream
 from src.Libs.path import MPath_
+from src.Vebp.fstr import format_string
 
 
 class VebpData:
     FILENAME = "vebp-config.json"
+
+    PROP_DICT = {}
 
     def __init__(self, path) -> None:
         self.file = self._read(path)
@@ -20,8 +24,15 @@ class VebpData:
         except FileNotFoundError:
             return self.default()
 
-    @staticmethod
-    def generate_default() -> dict: ...
+    @classmethod
+    def generate_default(cls) -> dict:
+        generate = {}
+
+        for k, v in cls.PROP_DICT.items():
+            if v.get("generate", False):
+                generate[k] = format_string(v["default"])
+
+        return generate
 
     @classmethod
     def create(cls, path, overwrite=False) -> bool:
@@ -40,7 +51,11 @@ class VebpData:
         return True
 
     def get(self, key, default=None) -> Any:
-        return self.file.get(key, default)
+        if key in self.PROP_DICT.keys():
+            return self.file.get(key, default)
+        else:
+            print(f"{key} dont in prop!", file=sys.stderr)
+            return None
 
     @staticmethod
     def default() -> dict[str, Any]:
