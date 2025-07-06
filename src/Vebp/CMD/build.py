@@ -1,4 +1,4 @@
-﻿from src.Vebp.Builder.builder import Builder
+﻿from src.Vebp.Builder.Builder import Builder
 from src.Vebp.CMD.tool import error
 
 

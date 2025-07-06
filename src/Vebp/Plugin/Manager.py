@@ -158,6 +158,11 @@ class PluginManager:
         print(f"插件未加载: {namespace}")
         return None
 
+    def run_hook_all(self, hook_name: str, *args, **kwargs) -> list[Any]:
+        if not self.plugins: return []
+
+        return [n.run_hook(hook_name, *args, **kwargs) for n in self.plugins.values()]
+
     def get_plugin(self, namespace: str) -> Optional[Plugin]:
         """
         获取插件实例

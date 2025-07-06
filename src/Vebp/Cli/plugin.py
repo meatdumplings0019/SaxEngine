@@ -1,4 +1,4 @@
-﻿from src.Vebp.Builder.plugin import PluginBuilder
+﻿from src.Vebp.Builder.Plugin import PluginBuilder
 from src.Vebp.Plugin.globals import get_plugin_manager
 
 

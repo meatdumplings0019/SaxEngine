@@ -1,6 +1,6 @@
 ﻿import sys
 from pathlib import Path
-from src.Vebp.Builder.builder import Builder
+from src.Vebp.Builder.Builder import Builder
 
 
 class CliBuild:
