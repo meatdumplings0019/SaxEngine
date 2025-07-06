@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 
 from src.Libs.file import FolderStream
+from src.Vebp.Data.globals import get_config
 from src.Vebp.Data.plugin import PluginConfig
 from src.Vebp.Plugin import Plugin
 
@@ -20,12 +21,12 @@ class PluginManager:
         # 记录插件包名到路径的映射
         self.package_paths: Dict[str, str] = {}
 
-    def load_plugins(self, plugin_dir: str):
+    def load_plugins(self):
         """
         加载指定目录下的所有插件
-
-        :param plugin_dir: 插件目录路径
         """
+        plugin_dir = get_config().get("plugins", "plugins")
+
         plugin_dir_path = Path(plugin_dir)
         FolderStream(plugin_dir_path).create()
 
@@ -64,11 +65,9 @@ class PluginManager:
         author = meta.get("author", "null")
 
         if not namespace:
-            print("⚠️ 不是一个插件")
             return
 
         if namespace in self.plugins:
-            print(f"⚠️ 插件已加载: {namespace}")
             return
 
         package_name = f"plugin_{namespace}"

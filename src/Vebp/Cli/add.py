@@ -86,3 +86,5 @@
         plugin_parser.add_argument('--build', '-b', action='store_true',
                                    help='🔨 打包')
         plugin_parser.add_argument('--path', '-p', help='📂 插件路径')
+        plugin_parser.add_argument('--reload', '-r', action='store_true',
+                                   help='🔨 重新加载')

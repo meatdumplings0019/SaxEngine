@@ -29,3 +29,9 @@ class CliPlugin:
             pb = PluginBuilder(args.path)
             pb.build()
             print("✅ 插件构建完成!")
+            return
+
+        if args.reload:
+            get_plugin_manager().load_plugins()
+            print("🧩 加载成功")
+            return
