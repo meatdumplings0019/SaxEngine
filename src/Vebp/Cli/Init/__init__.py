@@ -1,8 +1,8 @@
 ﻿from pathlib import Path
-from src.Vebp.Data.build_config import BuildConfig
-from src.Vebp.Data.config import Config
-from src.Vebp.Data.pack import Pack
-from src.Vebp.Data.package import Package
+from src.Vebp.Data.BuildConfig import BuildConfig
+from src.Vebp.Data.Config import Config
+from src.Vebp.Data.Pack import Pack
+from src.Vebp.Data.Package import Package
 
 
 class CliInit:
@@ -10,7 +10,7 @@ class CliInit:
     def handle(args) -> bool:
         print("🛠️ 正在初始化 VEBP 项目...")
 
-        path = getattr(args, 'path', ".")
+        path = getattr(args, 'path', "..")
         project_name = Path.cwd().name
 
         package_success = Package.create(path, args.force)

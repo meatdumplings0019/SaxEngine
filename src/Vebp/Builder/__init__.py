@@ -2,8 +2,8 @@
 from sys import platform
 from typing import Optional, Union
 
-from src.Libs.file import FolderStream
-from src.Libs.path import MPath_
+from src.Libs.File.__init__ import FolderStream
+from src.Libs.File.path import MPath_
 from src.Vebp.Base import VebpBase
 
 

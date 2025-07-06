@@ -11,6 +11,6 @@ class PluginConfig(VebpData):
         },
         "author": {
             "generate": True,
-            "default": "Vebp"
+            "default": "vebp"
         }
     }

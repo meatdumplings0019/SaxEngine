@@ -1,4 +1,4 @@
-﻿from src.Vebp.Data.config import Config
+﻿from src.Vebp.Data.Config import Config
 
 _global_config_manager = None
 

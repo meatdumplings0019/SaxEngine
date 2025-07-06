@@ -1,9 +1,8 @@
 ﻿import subprocess
 import sys
-from shlex import shlex
-from src.Libs.path import MPath_
-from src.Vebp.Data.package import Package
-from src.Vebp.Cli.command_mapper import CommandMapper
+from src.Libs.File.path import MPath_
+from src.Vebp.Data.Package import Package
+from src.Vebp.Cli.Dev.mapper import CommandMapper
 
 
 class CliDev:

@@ -1,13 +1,13 @@
 ﻿import pygame
 
 from src.InputSystem import InputAction
-from src.Libs.resolution import Resolution_
-from src.Libs.util import Message
+from src.Libs.Window.resolution import Resolution_
+from src.Libs.Utils import Message
 from src.Manager import Manager
 from src.Window import Window
-from src.Window.DefaultWindow import DefaultWindow
-from src.Window.EmptyWindow import EmptyWindow
-from src.Window.IndependenceWindow import IndependenceWindow
+from src.Window.Independence.DefaultWindow import DefaultWindow
+from src.Window.Independence.EmptyWindow import EmptyWindow
+from src.Window.Independence import IndependenceWindow
 
 
 class WindowManager(Manager):

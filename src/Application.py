@@ -1,8 +1,8 @@
 ﻿import pygame
 
 from src.InputSystem import InputSystem
-from src.Libs.tool import Tool
-from src.Libs.window import WindowUtils
+from src.Libs.Utils.tool import Tool
+from src.Libs.Window import WindowUtils
 from src.Window.Manager import WindowManager
 
 WindowUtils.center()

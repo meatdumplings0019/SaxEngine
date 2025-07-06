@@ -4,8 +4,8 @@ import zipfile
 from pathlib import Path
 from typing import Optional
 
-from src.Libs.file import FileStream, FolderStream
-from src.Libs.path import MPath_
+from src.Libs.File import FileStream, FolderStream
+from src.Libs.File.path import MPath_
 
 
 class PluginBuilder:

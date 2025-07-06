@@ -1,5 +1,5 @@
-﻿from src.Libs.fs import get_fs
-from src.Libs.path import MPath_
+﻿from src.Libs.String import get_fs
+from src.Libs.File.path import MPath_
 
 
 

@@ -1,6 +1,6 @@
 ﻿import sys
 
-from src.Vebp.CMD.tool import error
+from src.Vebp.CMD.utils import error
 
 
 def cmd_exit(args) -> None:

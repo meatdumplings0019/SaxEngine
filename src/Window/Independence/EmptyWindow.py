@@ -1,6 +1,6 @@
 ﻿from src.Data.Fonts import msyh_font
-from src.Libs.display import Display
-from src.Window.IndependenceWindow import IndependenceWindow
+from src.Libs.Window.display import Display
+from src.Window.Independence import IndependenceWindow
 
 
 class EmptyWindow(IndependenceWindow):

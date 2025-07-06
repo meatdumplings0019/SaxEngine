@@ -2,10 +2,10 @@
 
 from src.Vebp import __version__
 from src.Vebp.Base import VebpBase
-from src.Vebp.CMD.build import cmd_build
-from src.Vebp.CMD.exit import cmd_exit
-from src.Vebp.CMD.init import cmd_init
-from src.Vebp.CMD.tool import error
+from src.Vebp.CMD.Builder import cmd_build
+from src.Vebp.CMD.Exit import cmd_exit
+from src.Vebp.CMD.Init import cmd_init
+from src.Vebp.CMD.utils import error
 
 
 class CMD(VebpBase):

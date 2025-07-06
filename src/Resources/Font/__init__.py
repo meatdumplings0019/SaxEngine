@@ -1,7 +1,7 @@
 ﻿import pygame
 from typing import Any
 
-from src.Libs.display import Display
+from src.Libs.Window.display import Display
 from src.Resources import Resource
 from src.Resources.Font.Assets import FontAssets
 

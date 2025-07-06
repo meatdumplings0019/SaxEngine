@@ -1,6 +1,6 @@
 ﻿import sys
 
-from src.Libs.error import get_traceback
+from src.Libs.Error import get_traceback
 from src.Vebp.Cli import CLI
 
 

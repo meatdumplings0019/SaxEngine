@@ -1,4 +1,4 @@
-﻿from src.Window.IndependenceWindow import IndependenceWindow
+﻿from src.Window.Independence import IndependenceWindow
 
 
 class DefaultWindow(IndependenceWindow):

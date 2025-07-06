@@ -1,5 +1,5 @@
 ﻿from src.Vebp.Builder.Builder import Builder
-from src.Vebp.CMD.tool import error
+from src.Vebp.CMD.utils import error
 
 
 def cmd_build(args) -> None:

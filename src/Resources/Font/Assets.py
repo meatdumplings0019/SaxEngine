@@ -1,8 +1,7 @@
 ﻿import pygame
 from pygame import Surface
 
-from src.Color import MColor
-from src.Libs.types import ColorType
+from src.Libs.Utils.types import ColorType
 
 
 class FontAssets:

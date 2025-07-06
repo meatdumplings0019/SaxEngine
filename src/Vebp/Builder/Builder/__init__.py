@@ -6,12 +6,12 @@ import sys
 from pathlib import Path
 from typing import Dict, Union, Optional
 
-from src.Libs.file import FileStream, FolderStream
-from src.Libs.path import MPath_
+from src.Libs.File import FileStream, FolderStream
+from src.Libs.File.path import MPath_
 from src.Vebp.Builder import BaseBuilder
-from src.Vebp.Data.build_config import BuildConfig
+from src.Vebp.Data.BuildConfig import BuildConfig
 from src.Vebp.Data.globals import get_config
-from src.Vebp.Data.package import Package
+from src.Vebp.Data.Package import Package
 
 
 class Builder(BaseBuilder):

@@ -1,5 +1,5 @@
 ﻿import argparse
-from src.Vebp.Cli.add import CliAdd
+from src.Vebp.Cli.Add import CliAdd
 
 class CliCreate:
     @staticmethod

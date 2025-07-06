@@ -5,7 +5,7 @@ from src.Vebp.Plugin.globals import get_plugin_manager
 class CliPlugin:
     @staticmethod
     def handle(args) -> None:
-        print("\n🧩 Plugin Tool")
+        print("\n🧩 PluginConfig Tool")
 
         if args.list:
             print("\n📋 已加载插件列表:")

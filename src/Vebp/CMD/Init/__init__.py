@@ -1,7 +1,7 @@
-﻿from src.Vebp.CMD.tool import error
-from src.Vebp.Data.build_config import BuildConfig
-from src.Vebp.Data.config import Config
-from src.Vebp.Data.package import Package
+﻿from src.Vebp.CMD.utils import error
+from src.Vebp.Data.BuildConfig import BuildConfig
+from src.Vebp.Data.Config import Config
+from src.Vebp.Data.Package import Package
 
 
 def cmd_init(args) -> bool:
@@ -11,7 +11,7 @@ def cmd_init(args) -> bool:
     try:
         path = args[0]
     except IndexError:
-        path = "."
+        path = ".."
 
     package_success = Package.create(path)
     build_success = BuildConfig.create(path)

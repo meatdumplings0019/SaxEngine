@@ -1,6 +1,6 @@
 ﻿import sys
 from src.ErrorWindow import ErrorWindow
-from src.Libs.error import get_traceback
+from src.Libs.Error import get_traceback
 
 
 def launch(func):

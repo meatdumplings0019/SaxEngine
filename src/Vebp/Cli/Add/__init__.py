@@ -78,7 +78,7 @@
     def add_plugin_command(subparsers) -> None:
         plugin_parser = subparsers.add_parser(
             'plugin',
-            help="🧩 Plugin Tool",
+            help="🧩 PluginConfig Tool",
             description='🧩 vebp-build.json plugins'
         )
         plugin_parser.add_argument('--list', '-l', action='store_true',

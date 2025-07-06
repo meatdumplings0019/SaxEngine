@@ -3,7 +3,7 @@
 from src.Color import MColor
 from src.InputSystem import InputAction
 from src.InputSystem.KeyCode import KeyCode
-from src.Window.IndependenceWindow import IndependenceWindow
+from src.Window.Independence import IndependenceWindow
 
 
 class WindowTestTwo(IndependenceWindow):

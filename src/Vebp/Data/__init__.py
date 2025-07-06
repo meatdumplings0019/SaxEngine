@@ -1,7 +1,7 @@
 from typing import Any
 
-from src.Libs.file import FileStream
-from src.Libs.path import MPath_
+from src.Libs.File import FileStream
+from src.Libs.File.path import MPath_
 from src.Vebp.fstr import format_string
 
 

@@ -1,4 +1,4 @@
-﻿from src.Libs.types import vec2
+﻿from src.Libs.Utils.types import vec2
 
 class Resolution:
     @property

@@ -5,9 +5,9 @@ import zipfile
 from pathlib import Path
 from typing import Dict, Any, Optional
 
-from src.Libs.file import FolderStream, FileStream
+from src.Libs.File import FolderStream, FileStream
 from src.Vebp.Data.globals import get_config
-from src.Vebp.Data.plugin import PluginConfig
+from src.Vebp.Data.PluginConfig import PluginConfig
 from src.Vebp.Plugin import Plugin
 
 
@@ -16,7 +16,7 @@ class PluginManager:
         """
         插件管理器初始化
         """
-        # 插件存储字典: {namespace: Plugin 实例}
+        # 插件存储字典: {namespace: PluginConfig 实例}
         self.plugins: Dict[str, Plugin] = {}
         # 记录插件包名到路径的映射
         self.package_paths: Dict[str, str] = {}
@@ -130,7 +130,7 @@ class PluginManager:
             del sys.modules[package_name]
             raise RuntimeError(f"主模块执行失败: {str(e)}")
 
-        # 4. 创建并存储 Plugin 实例
+        # 4. 创建并存储 PluginConfig 实例
         plugin = Plugin(
             namespace=namespace,
             author=author,
@@ -169,7 +169,7 @@ class PluginManager:
         获取插件实例
 
         :param namespace: 插件命名空间
-        :return: Plugin 实例或 None
+        :return: PluginConfig 实例或 None
         """
         return self.plugins.get(namespace)
 

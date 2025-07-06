@@ -1,7 +1,7 @@
 ﻿import pygame
 from pygame import Rect
 
-from src.Libs.types import vec2
+from src.Libs.Utils.types import vec2
 
 
 class Display:

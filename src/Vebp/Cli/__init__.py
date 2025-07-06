@@ -1,14 +1,14 @@
 ﻿import sys
 
 from src.Vebp.Base import VebpBase
-from src.Vebp.Cli.build import CliBuild
-from src.Vebp.Cli.create import CliCreate
-from src.Vebp.Cli.init import CliInit
-from src.Vebp.Cli.pack import CliPack
-from src.Vebp.Cli.package import CliPackage
+from src.Vebp.Cli.Builder import CliBuild
+from src.Vebp.Cli.Create import CliCreate
+from src.Vebp.Cli.Init import CliInit
+from src.Vebp.Cli.Pack import CliPack
+from src.Vebp.Cli.Package import CliPackage
 from src.Vebp.CMD import CMD
-from src.Vebp.Cli.dev import CliDev
-from src.Vebp.Cli.plugin import CliPlugin
+from src.Vebp.Cli.Dev import CliDev
+from src.Vebp.Cli.Plugin import CliPlugin
 
 
 class CLI(VebpBase):
