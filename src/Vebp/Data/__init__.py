@@ -57,6 +57,20 @@ class VebpData:
             print(f"{key} dont in prop!", file=sys.stderr)
             return None
 
+    def get_value(self, key, default=None, *keys) -> Any:
+        try:
+            if not keys: return self.get(key, default)
+
+            value = self.get(key, {})
+
+            for k in keys[1:-1]:
+                value = value.get(k, {})
+
+            return value.get(keys[-1], default)
+        except Exception as e:
+            print(f"🔥{e}")
+            return None
+
     @staticmethod
     def default() -> dict[str, Any]:
         return {}

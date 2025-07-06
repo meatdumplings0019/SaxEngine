@@ -1,14 +1,16 @@
 ﻿from colorama import Fore, Style
 
 from src.Vebp import __version__
+from src.Vebp.Base import VebpBase
 from src.Vebp.CMD.build import cmd_build
 from src.Vebp.CMD.exit import cmd_exit
 from src.Vebp.CMD.init import cmd_init
 from src.Vebp.CMD.tool import error
 
 
-class CMD:
+class CMD(VebpBase):
     def __init__(self) -> None:
+        super().__init__()
         self.input = ""
 
     def _get_input(self) -> None:

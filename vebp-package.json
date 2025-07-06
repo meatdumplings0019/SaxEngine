@@ -4,6 +4,6 @@
   "scripts": {
     "start": "run run.py",
     "build": "run build.py",
-    "vebp": "run src/Vebp/run.py init test -f"
+    "vebp": "run src/Vebp/run.py plugin -l"
   }
 }

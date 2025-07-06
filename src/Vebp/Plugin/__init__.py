@@ -12,11 +12,25 @@ class Plugin:
         :param package_name: 插件包名
         :param meta: 插件元数据
         """
-        self.namespace = namespace
-        self.author = author
+        self._namespace = namespace
+        self._author = author
         self.module = module
         self.package_name = package_name
         self.meta = meta
+
+        self._action = True
+
+    @property
+    def namespace(self) -> str:
+        return self._namespace
+
+    @property
+    def author(self) -> str:
+        return self._author
+
+    @property
+    def action(self):
+        return self._action
 
     def run_hook(self, hook_name: str, *args, **kwargs) -> Any:
         """
@@ -27,23 +41,32 @@ class Plugin:
         :param kwargs: 传递给钩子函数的关键字参数
         :return: 钩子函数的返回值
         """
+        if not self._action:
+            return None
+
         hook_func_name = f"{hook_name}_hook"
 
         if not hasattr(self.module, hook_func_name):
-            print(f"插件 {self.namespace} 未定义钩子函数: {hook_func_name}")
+            print(f"插件 {self._namespace} 未定义钩子函数: {hook_func_name}")
             return None
 
         hook_func = getattr(self.module, hook_func_name)
 
         if not callable(hook_func):
-            raise TypeError(f"插件 {self.namespace} 的 {hook_func_name} 不是可调用函数")
+            raise TypeError(f"插件 {self._namespace} 的 {hook_func_name} 不是可调用函数")
 
         try:
             return hook_func(*args, **kwargs)
         except Exception as e:
-            print(f"⚠️ 钩子执行失败 [{self.namespace}.{hook_func_name}]: {str(e)}")
+            print(f"⚠️ 钩子执行失败 [{self._namespace}.{hook_func_name}]: {str(e)}")
             raise
 
     def get_meta(self) -> dict[str, Any]:
         """获取插件元数据"""
         return self.meta.copy()
+
+    def enable(self):
+        self._action = True
+
+    def disable(self):
+        self._action = False

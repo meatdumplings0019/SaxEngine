@@ -17,7 +17,7 @@ class CliPlugin:
 
             for pn in plugins:
                 p = get_plugin_manager().get_plugin(pn)
-                print(f"  🔌 {p.namespace}: 作者: {p.author}")
+                print(f"  🔌 {p.namespace}: 作者: {p.author} 是否开启:  {'✅' if p.action else '❌'}")
             return
 
         if args.build:

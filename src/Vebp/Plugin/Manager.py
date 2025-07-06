@@ -5,7 +5,7 @@ import zipfile
 from pathlib import Path
 from typing import Dict, Any, Optional
 
-from src.Libs.file import FolderStream
+from src.Libs.file import FolderStream, FileStream
 from src.Vebp.Data.globals import get_config
 from src.Vebp.Data.plugin import PluginConfig
 from src.Vebp.Plugin import Plugin
@@ -25,31 +25,32 @@ class PluginManager:
         """
         加载指定目录下的所有插件
         """
-        plugin_dir = get_config().get("plugins", "plugins")
+        plugin_dir = get_config().get_value("plugins", "plugins", "src")
 
-        plugin_dir_path = Path(plugin_dir)
-        FolderStream(plugin_dir_path).create()
+        f = FolderStream(plugin_dir).create()
 
-        # 加载ZIP插件
-        for zip_file in plugin_dir_path.glob("*.zip"):
-            with tempfile.TemporaryDirectory() as tmp_dir:
-                try:
-                    # 解压ZIP
-                    with zipfile.ZipFile(zip_file, 'r') as z:
+        for fs in f.walk().files:
+            self.load_plugin(fs.path)
+
+        for ff in f.walk().folders:
+            self.load_plugin(ff.path)
+
+    def load_plugin(self, plugin_name: str | Path):
+        try:
+            plugin = Path(str(plugin_name))
+
+            if FileStream(plugin).suffix == ".zip":
+                with tempfile.TemporaryDirectory() as tmp_dir:
+                    with zipfile.ZipFile(plugin, 'r') as z:
                         z.extractall(tmp_dir)
 
-                    # 加载插件
                     self._load_single_plugin(Path(tmp_dir))
-                except Exception as e:
-                    print(f"🔥 ZIP插件加载失败 [{zip_file.name}]: {str(e)}")
 
-        # 加载文件夹插件
-        for folder in plugin_dir_path.iterdir():
-            if folder.is_dir():
-                try:
-                    self._load_single_plugin(folder)
-                except Exception as e:
-                    print(f"🔥 文件夹插件加载失败 [{folder.name}]: {str(e)}")
+            if plugin.is_dir():
+                self._load_single_plugin(plugin)
+
+        except Exception as e:
+            print(f"🔥 解析失败[{plugin_name}]: {str(e)}]")
 
     def _load_single_plugin(self, plugin_path: Path):
         """
@@ -205,3 +206,9 @@ class PluginManager:
             print(f"✅ 插件已卸载: {namespace}")
         else:
             print(f"⚠️ 插件未加载: {namespace}")
+
+    def enable(self, namespace: str):
+        self.get_plugin(namespace).enable()
+
+    def disable(self, namespace: str):
+        self.get_plugin(namespace).disable()

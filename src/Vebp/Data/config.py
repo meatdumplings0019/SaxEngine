@@ -8,13 +8,21 @@ class Config(VebpData):
 
     PROP_DICT = {
         "autoRun": {},
-        "plugins": {},
+        "plugins": {
+            "value": {
+                "src": {},
+                "add": {}
+            }
+        },
     }
 
     @staticmethod
     def default() -> dict[str, Any]:
         return {
             "autoRun": True,
-            "plugins": "plugins"
+            "plugins": {
+                "src": "plugins",
+                "add": {}
+            }
         }
 
