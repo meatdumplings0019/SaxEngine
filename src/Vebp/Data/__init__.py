@@ -50,18 +50,12 @@ class VebpData:
 
         return True
 
-    def get(self, key, default=None) -> Any:
-        if key in self.PROP_DICT.keys():
-            return self.file.get(key, default)
-        else:
-            print(f"{key} dont in prop!", file=sys.stderr)
-            return None
-
-    def get_value(self, key, default=None, *keys) -> Any:
+    def get(self, key, default=None, *keys) -> Any:
         try:
-            if not keys: return self.get(key, default)
+            if not keys:
+                return self.file.get(key, default)
 
-            value = self.get(key, {})
+            value = self.file.get(key, {})
 
             for k in keys[1:-1]:
                 value = value.get(k, {})

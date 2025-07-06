@@ -25,7 +25,7 @@ class PluginManager:
         """
         加载指定目录下的所有插件
         """
-        plugin_dir = get_config().get_value("plugins", "plugins", "src")
+        plugin_dir = get_config().get("plugins", "plugins", "src")
 
         f = FolderStream(plugin_dir).create()
 

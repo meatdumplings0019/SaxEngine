@@ -6,7 +6,7 @@ class VebpBase:
     def __init__(self):
         get_plugin_manager().load_plugins()
 
-        p_lst = get_config().get_value("plugins", [], "add")
+        p_lst = get_config().get("plugins", [], "add")
         if p_lst:
             for p in p_lst:
                 get_plugin_manager().load_plugin(p)
