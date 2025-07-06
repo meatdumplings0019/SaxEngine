@@ -71,6 +71,7 @@ class Builder(BaseBuilder):
 
     @staticmethod
     def from_package(folder_path = None, sub=None, parent=None, base_path=".") -> Optional["Builder"]:
+        super().from_package()
         if folder_path:
             folder_path = Path(str(folder_path))
             build_config = BuildConfig(folder_path / BuildConfig.FILENAME)
@@ -327,21 +328,6 @@ class Builder(BaseBuilder):
                 subprocess.Popen([str(exe_path)])
         except Exception as e:
             print(f"运行程序失败: {str(e)}", file=sys.stderr)
-
-    def _get_venv_python(self) -> Optional[Union[str, Path]]:
-        venv_dir = MPath_.cwd / Path(self.venv)
-
-        if not venv_dir.exists():
-            return None
-
-        if platform.system() == "Windows":
-            python_path = venv_dir / "Scripts" / "python.exe"
-        else:
-            python_path = venv_dir / "bin" / "python"
-
-        if python_path.exists():
-            return python_path
-        return "python.exe"
 
     def _compile_sub_project(self) -> None:
         if not self.sub_project_src:
