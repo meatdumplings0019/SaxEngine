@@ -1,4 +1,3 @@
-import sys
 from typing import Any
 
 from src.Libs.file import FileStream
