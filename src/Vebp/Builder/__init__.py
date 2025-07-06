@@ -4,7 +4,7 @@ from typing import Optional, Union
 
 from src.Libs.File.__init__ import FolderStream
 from src.Libs.File.path import MPath_
-from src.Vebp.Base import VebpBase
+from src.Vebp.base import VebpBase
 
 
 class BaseBuilder(VebpBase):

@@ -1,7 +1,7 @@
 ﻿from colorama import Fore, Style
 
-from src.Vebp import __version__
-from src.Vebp.Base import VebpBase
+from src.Vebp.version import __version__
+from src.Vebp.base import VebpBase
 from src.Vebp.CMD.Builder import cmd_build
 from src.Vebp.CMD.Exit import cmd_exit
 from src.Vebp.CMD.Init import cmd_init

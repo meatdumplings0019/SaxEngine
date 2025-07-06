@@ -1,6 +1,6 @@
 ﻿import sys
 
-from src.Vebp.Base import VebpBase
+from src.Vebp.base import VebpBase
 from src.Vebp.Cli.Builder import CliBuild
 from src.Vebp.Cli.Create import CliCreate
 from src.Vebp.Cli.Init import CliInit

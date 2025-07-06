@@ -1,2 +1,11 @@
-﻿"""vebp - Enhanced PyInstaller Packaging Tool"""
-__version__ = "1.0.0"
+﻿import src.Vebp.Builder
+import src.Vebp.Cli
+import src.Vebp.CMD
+import src.Vebp.Data
+import src.Vebp.Plugin
+
+import src.Vebp.base
+import src.Vebp.fstr
+import src.Vebp.lancher
+import src.Vebp.run
+import src.Vebp.version
