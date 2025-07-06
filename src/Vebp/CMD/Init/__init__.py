@@ -11,7 +11,7 @@ def cmd_init(args) -> bool:
     try:
         path = args[0]
     except IndexError:
-        path = ".."
+        path = "."
 
     package_success = Package.create(path)
     build_success = BuildConfig.create(path)

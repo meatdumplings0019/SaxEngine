@@ -1,13 +1,12 @@
-import importlib.util
 import sys
-import tempfile
-import zipfile
 from pathlib import Path
 from typing import Dict, Any, Optional
 
 from src.Libs.File import FolderStream, FileStream
-from src.Vebp.Data.globals import get_config
+from src.Libs.File.modulelib import ModuleLoader
+from src.Libs.File.zip import ZipContent
 from src.Vebp.Data.PluginConfig import PluginConfig
+from src.Vebp.Data.globals import get_config
 from src.Vebp.Plugin import Plugin
 
 
@@ -40,11 +39,8 @@ class PluginManager:
             plugin = Path(str(plugin_name))
 
             if FileStream(plugin).suffix == ".zip":
-                with tempfile.TemporaryDirectory() as tmp_dir:
-                    with zipfile.ZipFile(plugin, 'r') as z:
-                        z.extractall(tmp_dir)
-
-                    self._load_single_plugin(Path(tmp_dir))
+                with ZipContent(plugin) as zipf:
+                    self._load_single_plugin(zipf)
 
             if plugin.is_dir():
                 self._load_single_plugin(plugin)
@@ -73,62 +69,11 @@ class PluginManager:
 
         package_name = f"plugin_{namespace}"
 
-        # 如果包已存在，先卸载
         if package_name in sys.modules:
-            self.unload_plugin(namespace)
+            return
 
-        # 创建包规格
-        spec = importlib.util.spec_from_loader(
-            package_name,
-            loader=None,
-            origin=str(plugin_dir),
-            is_package=True
-        )
-        if spec is None:
-            raise ImportError(f"无法创建包规范: {package_name}")
-
-        # 创建包模块
-        package_module = importlib.util.module_from_spec(spec)
-        sys.modules[package_name] = package_module
-
-        # 设置包路径
-        package_module.__path__ = [str(plugin_dir)]
-        package_module.__package__ = package_name
-
-        # 3. 加载主模块
-        entry_file = plugin_dir / "main.py"
-        if not entry_file.exists():
-            # 清理包模块
-            del sys.modules[package_name]
-            raise FileNotFoundError("入口文件 main.py 不存在")
-
-        # 创建主模块规范
-        main_module_name = f"{package_name}.main"
-        spec = importlib.util.spec_from_file_location(
-            main_module_name,
-            str(entry_file),
-            submodule_search_locations=[str(plugin_dir)]
-        )
-        if spec is None:
-            # 清理包模块
-            del sys.modules[package_name]
-            raise ImportError(f"无法创建模块规范: {entry_file}")
-
-        main_module = importlib.util.module_from_spec(spec)
-        sys.modules[main_module_name] = main_module
-
-        try:
-            # 设置主模块的包信息
-            main_module.__package__ = package_name
-            main_module.__path__ = [str(plugin_dir)]
-
-            # 执行主模块
-            spec.loader.exec_module(main_module)
-        except Exception as e:
-            # 清理
-            del sys.modules[main_module_name]
-            del sys.modules[package_name]
-            raise RuntimeError(f"主模块执行失败: {str(e)}")
+        with ModuleLoader(plugin_dir, package_name, "main.py") as module:
+            main_module = module
 
         # 4. 创建并存储 PluginConfig 实例
         plugin = Plugin(

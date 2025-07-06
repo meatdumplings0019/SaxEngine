@@ -25,7 +25,7 @@ class CMD(VebpBase):
             case "build":
                 cmd_build(args)
             case "init":
-                print(f"{cmd_init(args)}")
+                cmd_init(args)
             case other:
                 error(f"Unknown command {other}")
 
