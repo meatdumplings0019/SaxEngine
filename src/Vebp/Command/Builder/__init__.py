@@ -6,7 +6,6 @@ from src.Vebp.Builder.Builder import Builder
 class CommandBuild:
     @staticmethod
     def handle(args) -> None:
-        print(args)
         try:
             builder = Builder.from_package()
 
