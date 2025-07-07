@@ -2,10 +2,10 @@
 import sys
 from src.Libs.File.path import MPath_
 from src.Vebp.Data.Package import Package
-from src.Vebp.Cli.Dev.mapper import CommandMapper
+from src.Vebp.Command.Dev.mapper import CommandMapper
 
 
-class CliDev:
+class CommandDev:
     @staticmethod
     def handle(args) -> None:
         try:

@@ -1,4 +1,4 @@
-﻿class CliAdd:
+﻿class CommandAdd:
     @staticmethod
     def add_build_command(subparsers) -> None:
         build_parser = subparsers.add_parser(
@@ -88,3 +88,9 @@
         plugin_parser.add_argument('--path', '-p', help='📂 插件路径')
         plugin_parser.add_argument('--reload', '-r', action='store_true',
                                    help='🔨 重新加载')
+
+    @staticmethod
+    def add_exit_command(subparsers) -> None:
+        exit_parser = subparsers.add_parser(
+            "exit"
+        )

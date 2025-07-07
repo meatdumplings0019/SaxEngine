@@ -1,4 +1,4 @@
-﻿class CliPack:
+﻿class CommandPack:
     @staticmethod
     def handle() -> None:
         print("📦 正在打包项目...")

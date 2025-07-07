@@ -2,7 +2,7 @@
 from src.Vebp.Plugin.globals import get_plugin_manager
 
 
-class CliPlugin:
+class CommandPlugin:
     @staticmethod
     def handle(args) -> None:
         print("\n🧩 PluginConfig Tool")

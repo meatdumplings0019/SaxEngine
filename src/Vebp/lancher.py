@@ -1,7 +1,7 @@
 ﻿import sys
 
 from src.Libs.Error import get_traceback
-from src.Vebp.Cli import CLI
+from src.Vebp.cli import CLI
 
 
 def launch(func):

@@ -1,7 +1,7 @@
 ﻿import argparse
-from src.Vebp.Cli.Add import CliAdd
+from src.Vebp.Command.Add import CommandAdd
 
-class CliCreate:
+class CommandCreate:
     @staticmethod
     def create() -> argparse.ArgumentParser:
         parser = argparse.ArgumentParser(
@@ -27,11 +27,12 @@ class CliCreate:
             help='👉 选择要执行的操作'
         )
 
-        CliAdd.add_build_command(subparsers)
-        CliAdd.add_init_command(subparsers)
-        CliAdd.add_package_command(subparsers)
-        CliAdd.add_pack_command(subparsers)
-        CliAdd.add_dev_command(subparsers)
-        CliAdd.add_plugin_command(subparsers)
+        CommandAdd.add_build_command(subparsers)
+        CommandAdd.add_init_command(subparsers)
+        CommandAdd.add_package_command(subparsers)
+        CommandAdd.add_pack_command(subparsers)
+        CommandAdd.add_dev_command(subparsers)
+        CommandAdd.add_plugin_command(subparsers)
+        CommandAdd.add_exit_command(subparsers)
 
         return parser

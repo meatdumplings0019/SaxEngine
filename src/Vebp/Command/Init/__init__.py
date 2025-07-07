@@ -5,12 +5,12 @@ from src.Vebp.Data.Pack import Pack
 from src.Vebp.Data.Package import Package
 
 
-class CliInit:
+class CommandInit:
     @staticmethod
     def handle(args) -> bool:
         print("🛠️ 正在初始化 VEBP 项目...")
 
-        path = getattr(args, 'path', "..")
+        path = getattr(args, 'path', "../../Cli")
         project_name = Path.cwd().name
 
         package_success = Package.create(path, args.force)

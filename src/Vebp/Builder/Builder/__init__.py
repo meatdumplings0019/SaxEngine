@@ -71,7 +71,6 @@ class Builder(BaseBuilder):
 
     @staticmethod
     def from_package(folder_path = None, sub=None, parent=None, base_path=".") -> Optional["Builder"]:
-        super().from_package()
         if folder_path:
             folder_path = Path(str(folder_path))
             build_config = BuildConfig(folder_path / BuildConfig.FILENAME)

@@ -1,5 +1,5 @@
-﻿from pathlib import Path
-from sys import platform
+﻿import platform
+from pathlib import Path
 from typing import Optional, Union
 
 from src.Libs.File.__init__ import FolderStream
@@ -68,10 +68,6 @@ class BaseBuilder(VebpBase):
         """验证构建器配置"""
         if not self.name:
             raise ValueError("项目名称是必需的")
-
-    @staticmethod
-    def from_package() -> Optional["BaseBuilder"]:
-        pass
 
     def _get_venv_python(self) -> Optional[Union[str, Path]]:
         venv_dir = MPath_.cwd / Path(self.venv)

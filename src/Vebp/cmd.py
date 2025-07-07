@@ -1,33 +1,23 @@
 ﻿from colorama import Fore, Style
 
+from src.Libs.Args import ArgsUtil
+from src.Vebp.Command.Create import CommandCreate
+from src.Vebp.Command.matches import CommandMatch
 from src.Vebp.version import __version__
 from src.Vebp.base import VebpBase
-from src.Vebp.CMD.Builder import cmd_build
-from src.Vebp.CMD.Exit import cmd_exit
-from src.Vebp.CMD.Init import cmd_init
-from src.Vebp.CMD.utils import error
 
 
 class CMD(VebpBase):
     def __init__(self) -> None:
         super().__init__()
         self.input = ""
+        self.parser = CommandCreate.create()
 
     def _get_input(self) -> None:
         self.input = input(f"{Fore.MAGENTA}>>> ")
 
     def _compile(self) -> None:
-        command, *args = self.input.split(" ")
-        # noinspection PyUnreachableCode
-        match command:
-            case "exit":
-                cmd_exit(args)
-            case "build":
-                cmd_build(args)
-            case "init":
-                cmd_init(args)
-            case other:
-                error(f"Unknown command {other}")
+        CommandMatch.handle(ArgsUtil.parse_input_args(self.input, self.parser))
 
     def run(self) -> None:
         print(f"Vebp {__version__}")
