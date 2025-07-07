@@ -24,4 +24,5 @@ class CMD(VebpBase):
                 print(Style.RESET_ALL, end="")
                 CommandMatch.handle(ArgsUtil.parse_input_args(file, self.parser))
             except Exception as e:
+                print(Style.RESET_ALL, end="")
                 print(e, file=sys.stderr)
