@@ -30,13 +30,11 @@ class Builder(BaseBuilder):
         self.sub_project_src = {}
         self.sub_project_builder = []
 
-        self._get_path()
-
     def _get_path(self) -> None:
         if not self._parent_path:
             self._parent_path = self.name
 
-        self._project_dir = self._base_output_dir / self._parent_path
+        self._project_dir = self.base_output_dir / self._parent_path
 
         if self._sub:
             self._project_dir /= self._sub
@@ -341,6 +339,8 @@ class Builder(BaseBuilder):
 
     def build(self) -> bool:
         super().build()
+        self._get_path()
+
         python_path = self._get_venv_python()
 
         FolderStream(str(self._project_dir)).create()
@@ -379,17 +379,16 @@ class Builder(BaseBuilder):
             print(f"\n❌ {str(e)}", file=sys.stderr)
             return False
 
-    def clean(self):
+    @staticmethod
+    def clean():
         try:
             print(f"\n🧹 正在清理构建文件...")
-            shutil.rmtree(self._base_output_dir, ignore_errors=True)
+            shutil.rmtree(Builder().base_output_dir, ignore_errors=True)
             shutil.rmtree(MPath_.cwd / "build", ignore_errors=True)
             shutil.rmtree(MPath_.cwd / "dist", ignore_errors=True)
             print(f"✅ 清理成功, 已删除'vebp-build', 'build', 'dist'")
         except Exception as e:
             print(f"\n❌ {str(e)}", file=sys.stderr)
-
-        return self
 
     def __repr__(self):
         return f'<Builder name: {self.name}>'

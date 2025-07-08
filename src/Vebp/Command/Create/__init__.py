@@ -34,5 +34,6 @@ class CommandCreate:
         CommandAdd.add_dev_command(subparsers)
         CommandAdd.add_plugin_command(subparsers)
         CommandAdd.add_exit_command(subparsers)
+        CommandAdd.add_clean_command(subparsers)
 
         return parser

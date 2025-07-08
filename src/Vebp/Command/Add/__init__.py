@@ -94,3 +94,9 @@
         exit_parser = subparsers.add_parser(
             "exit"
         )
+
+    @staticmethod
+    def add_clean_command(subparsers) -> None:
+        clean_parser = subparsers.add_parser(
+            "clean"
+        )

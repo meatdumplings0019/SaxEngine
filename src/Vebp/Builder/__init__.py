@@ -24,9 +24,7 @@ class BaseBuilder(VebpBase):
         self._script_path = None
         self._project_dir = None
 
-        # 设置基础输出目录
-        self._base_output_dir = MPath_.cwd / "vebp-build"
-        FolderStream(self._base_output_dir).create()
+        FolderStream(self.base_output_dir).create()
 
     @property
     def name(self) -> str:
@@ -52,6 +50,10 @@ class BaseBuilder(VebpBase):
     def script_path(self) -> Path:
         """获取脚本路径"""
         return self._script_path
+
+    @property
+    def base_output_dir(self) -> Path:
+        return MPath_.cwd / "vebp-build"
 
     def set_script(self, script_path: str) -> "BaseBuilder":
         """

@@ -1,6 +1,7 @@
 ﻿import sys
 
 from src.Vebp.Command.Builder import CommandBuild
+from src.Vebp.Command.Clean import CommandClean
 from src.Vebp.Command.Dev import CommandDev
 from src.Vebp.Command.Exit import CommandExit
 from src.Vebp.Command.Init import CommandInit
@@ -34,5 +35,7 @@ class CommandMatch:
                 CommandPlugin.handle(parsed_args)
             case 'exit':
                 CommandExit.handle()
+            case "clean":
+                CommandClean.handle()
             case others:
                 print(f"{others} dont have.", file=sys.stderr)
