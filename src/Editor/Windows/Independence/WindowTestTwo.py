@@ -20,4 +20,4 @@ class WindowTestTwo(IndependenceWindow):
         font = Surface((400, 400))
         font.fill(MColor("yellow").to())
         rect = font.get_rect(topleft=(0, 0))
-        self.surface_display.blit(font, rect)
+        self.box.blit(font, rect)
