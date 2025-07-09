@@ -1,6 +1,8 @@
 ﻿from pygame import Surface
 from src.Data.Fonts import msyh_font
 from src.Data.Surface import black_surface
+from src.InputSystem import InputAction
+from src.Libs.Utils.types import vec2
 from src.Libs.Window.display import Display
 from src.Surface import SurfaceRender
 from src.Window import Window
@@ -14,13 +16,41 @@ class EmbeddedWindow(Window):
 
         self.active: bool = False
 
-        self.bg = Surface((self._width, self._height))
+        self.bg = Surface((self._width, self._height - self.TITLE))
         self.bg_rect = self.bg.get_rect()
         self.bg.fill("Gray")
 
         self.title_bar = Surface((self._width, self.TITLE))
         self.title_bar_rect = self.title_bar.get_rect()
         self.title_bar.fill("Yellow")
+
+        self.max = False
+
+        self.is_dragging = False
+        self.drag_offset = 0
+
+    def init(self) -> None:
+        self.is_dragging = False
+        self.drag_offset = 0
+
+    def handle_event(self, event: InputAction):
+        super().handle_event(event)
+        if event.IsBtnDown(Display.get_global_rect(self.title_bar_rect, self.box_rect)) and not self.max:
+            mouse_pos = event.mousePosition
+            self.is_dragging = True
+            self.drag_offset = mouse_pos - Display.get_global_size(self.x, self.y)
+
+        elif event.IsMouseUp() or self.max:
+            self.is_dragging = False
+        elif event.mouseMotion and self.is_dragging and not self.max:
+            new_pos = vec2(event.GetMousePosition()) - self.drag_offset
+            new_pos.x = max(0, int(min(new_pos.x - self.box.get_width() / 2,
+                                       self.parent.surface_display.get_width() - self.title_bar_rect.width)))
+            new_pos.y = max(0, int(min(new_pos.y - self.box.get_height() / 2,
+                                       self.parent.surface_display.get_height() - self.title_bar_rect.height)))
+            new_pos += (self.box.get_width() / 2, self.box.get_height() / 2)
+            new_pos = Display.get_return_size(new_pos.x, new_pos.y)
+            self._x, self._y = new_pos
 
     def open(self, x, y) -> None:
         self._x, self._y = x, y
@@ -40,8 +70,8 @@ class EmbeddedWindow(Window):
         self.title_bar.blit(icon_surf, icon_rect)
 
     def _draw(self):
-        self.bg = self.box.copy()
-        self.bg_rect = self.bg.get_rect()
+        self.bg = Surface(Display.get_global_size(self._width, self._height - self.TITLE))
+        self.bg_rect = self.bg.get_rect(top=Display.get_global_height(self.TITLE))
         self.bg.fill("Gray")
 
         self.title_bar = Surface(Display.get_global_size(self._width, self.TITLE))
@@ -56,5 +86,6 @@ class EmbeddedWindow(Window):
     def render(self) -> None:
         super().render()
         self.box_rect = self.box.get_rect(center=Display.get_global_size(self.w_x, self.w_y))
+        self.box.fill("White")
         self._draw()
         self.parent.box.blit(self.box, self.box_rect)
