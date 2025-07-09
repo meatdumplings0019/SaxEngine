@@ -1,6 +1,6 @@
 ﻿import pygame
 
-from src.Surface import BaseSurface
+from src.Surface.Base import BaseSurface
 
 
 class DisplaySurface(BaseSurface):

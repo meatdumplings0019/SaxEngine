@@ -10,16 +10,16 @@ class EmbeddedWindow(Window):
         super().__init__(width, height + self.TITLE, title, icon)
         self.active: bool = False
 
-        self.bg = Surface((self.width, self.height))
+        self.bg = Surface((self._width, self._height))
         self.bg_rect = self.bg.get_rect()
         self.bg.fill("Gray")
 
-        self.title_bar = Surface((self.width, self.TITLE))
+        self.title_bar = Surface((self._width, self.TITLE))
         self.title_bar_rect = self.title_bar.get_rect()
         self.title_bar.fill("Yellow")
 
     def open(self, x, y) -> None:
-        self.s_x, self.s_y = x, y
+        self._x, self._y = x, y
         self.active = True
 
     def close(self) -> None:
@@ -35,7 +35,7 @@ class EmbeddedWindow(Window):
         self.bg_rect = self.bg.get_rect()
         self.bg.fill("Gray")
 
-        self.title_bar = Surface(Display.get_global_size(self.width, self.TITLE))
+        self.title_bar = Surface(Display.get_global_size(self._width, self.TITLE))
         self.title_bar_rect = self.title_bar.get_rect()
         self.title_bar.fill("Yellow")
 
@@ -45,6 +45,6 @@ class EmbeddedWindow(Window):
 
     def render(self) -> None:
         super().render()
-        self.box_rect = self.box.get_rect(center=Display.get_global_size(self.s_x, self.s_y))
+        self.box_rect = self.box.get_rect(center=Display.get_global_size(self.w_x, self.w_y))
         self._draw()
         self.parent.box.blit(self.box, self.box_rect)

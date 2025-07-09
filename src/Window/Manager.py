@@ -4,7 +4,7 @@ from src.InputSystem import InputAction
 from src.Libs.Window.resolution import Resolution_
 from src.Libs.Utils import Message
 from src.Manager import Manager
-from src.Surface.DisplaySurface import DisplaySurface
+from src.Surface.Base.DisplaySurface import DisplaySurface
 from src.Window import Window
 from src.Window.Independence.DefaultWindow import DefaultWindow
 from src.Window.Independence.EmptyWindow import EmptyWindow

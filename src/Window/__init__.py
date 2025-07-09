@@ -1,4 +1,4 @@
-﻿from src.Surface.CustomizeSurface import CustomizeSurface
+﻿from src.Surface.Base.CustomizeSurface import CustomizeSurface
 
 
 class Window(CustomizeSurface):
