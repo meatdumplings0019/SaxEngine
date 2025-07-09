@@ -17,7 +17,7 @@ class WindowTestOne(IndependenceWindow):
     def handle_event(self, event: InputAction) -> None:
         super().handle_event(event)
         if event.IsKeyDown(KeyCode.K_2):
-            self.manager.switch("test2")
+            self.parent.switch("test2")
 
     def render(self) -> None:
         super().render()

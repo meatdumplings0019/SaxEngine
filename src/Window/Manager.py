@@ -4,15 +4,17 @@ from src.InputSystem import InputAction
 from src.Libs.Window.resolution import Resolution_
 from src.Libs.Utils import Message
 from src.Manager import Manager
+from src.Surface.DisplaySurface import DisplaySurface
 from src.Window import Window
 from src.Window.Independence.DefaultWindow import DefaultWindow
 from src.Window.Independence.EmptyWindow import EmptyWindow
 from src.Window.Independence import IndependenceWindow
 
 
-class WindowManager(Manager):
+class WindowManager(Manager, DisplaySurface):
     def __init__(self) -> None:
         super().__init__()
+        super(Manager, self).__init__()
         self.current_window = DefaultWindow()
         self.windows: dict[str, IndependenceWindow] = {}
 
@@ -27,7 +29,7 @@ class WindowManager(Manager):
 
     def __add(self, _id, _val) -> Message[bool]:
         if isinstance(_val, IndependenceWindow):
-            _val.manager = self
+            _val.parent = self
             self.windows[_id] = _val
             return Message(True)
 
@@ -60,14 +62,12 @@ class WindowManager(Manager):
         try:
             self.current_window.exit()
             self.current_window, _ = self.get(key)
-            self.current_window.update_surface()
             self.set_window_size()
             self.current_window.enter()
             return Message(True)
         except KeyError as e:
             self.current_window.exit()
             self.current_window = DefaultWindow()
-            self.current_window.update_surface()
             self.set_window_size()
             self.current_window.enter()
             return Message(False, e)
@@ -91,11 +91,8 @@ class WindowManager(Manager):
     def exit(self) -> None:
         self.current_window.exit()
 
-    def update_surface(self) -> None:
-        self.current_window.update_surface()
-
     def set_window_size(self) -> None:
-        pygame.display.set_mode((self.current_window.width, self.current_window.height), self.current_window.window_state)
+        pygame.display.set_mode((self.current_window.w_width, self.current_window.w_height), self.current_window.window_state)
         pygame.display.set_caption(self.current_window.title)
 
         self.update_surface()
@@ -105,7 +102,7 @@ class WindowManager(Manager):
             self.current_window.return_size()
             self.current_window.window_state = 0
         else:
-            self.current_window.width, self.current_window.height = Resolution_.windowResolution
+            self.current_window.w_width, self.current_window.w_height = Resolution_.windowResolution
             self.current_window.window_state = pygame.NOFRAME
 
         self.current_window.is_fullscreen = not self.current_window.is_fullscreen

@@ -1,33 +1,39 @@
 ﻿from pygame import Surface
 
 from src.Libs.Window.display import Display
-from src.Surface.DisplaySurface import DisplaySurface
+from src.Surface import BaseSurface
 
 
-class CustomizeSurface(DisplaySurface):
+class CustomizeSurface(BaseSurface):
     def __init__(self, size: tuple[int, int] | Surface, pos: tuple[int, int] = (0,0)) -> None:
         super().__init__()
         if isinstance(size, tuple):
-            self.s_width, self.s_height = size
-            self.box = Surface((self.s_width, self.s_height))
+            self.width, self.height = size
+            self.box = Surface((self.width, self.height))
         elif isinstance(size, Surface):
-            self.s_width,  self.s_height = size.get_size()
+            self.width,  self.height = size.get_size()
             self.box = size.copy()
-
         self.box_rect = self.box.get_rect()
 
-        self.width = self.s_width
-        self.height = self.s_height
+        self.x, self.y = pos
 
-        self.s_x, self.s_y = pos
+        self.parent = None
 
-    def return_size(self) -> None:
-        self.width = self.s_width
-        self.height = self.s_height
+    @property
+    def surface_display(self):
+        return self.parent.surface_display
+
+    @property
+    def w_x(self):
+        return self.x + getattr(self.parent, 'w_x', 0)
+
+    @property
+    def w_y(self):
+        return self.y + getattr(self.parent, 'w_y', 0)
 
     def render(self) -> None:
-        self.box = Surface(Display.get_global_size(self.s_width, self.s_height))
-        self.box_rect = self.box.get_rect(topleft=Display.get_global_size(self.s_x, self.s_y))
+        self.box = Surface(Display.get_global_size(self.width, self.height))
+        self.box_rect = self.box.get_rect(topleft=Display.get_global_size(self.w_x, self.w_y))
 
     def afterRender(self) -> None:
         self.surface_display.blit(self.box, self.box_rect)

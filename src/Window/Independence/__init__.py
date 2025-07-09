@@ -8,13 +8,15 @@ from src.Window.Embedded import EmbeddedWindow
 class IndependenceWindow(Window):
     def __init__(self, width = 0, height = 0, title = "Window", full_key: KeyCode = KeyCode.K_F11) -> None:
         super().__init__(width, height, title)
-        self.manager = None
         self.window_state = 0
 
         self.is_fullscreen = False
         self.full_key = full_key
 
         self.embedded_windows: dict[str, EmbeddedWindow] = {}
+
+        self.w_width = self.width
+        self.w_height = self.height
 
     def add(self, _id, _val: EmbeddedWindow) -> Message[bool]:
         if not _id in self.embedded_windows:
@@ -61,8 +63,8 @@ class IndependenceWindow(Window):
 
     def open_children(self, _id: str, x=None, y=None) -> Message[bool]:
         if not x:
-            x = self.s_width / 2
-            y = self.s_height / 2
+            x = self.width / 2
+            y = self.height / 2
 
         try:
             obj = self.embedded_windows[_id]
@@ -71,7 +73,6 @@ class IndependenceWindow(Window):
         except Exception as e:
             return Message(False, e)
 
-    def update_surface(self) -> None:
-        super().update_surface()
-        for i, w in self.embedded_windows.items():
-            w.update_surface()
+    def return_size(self) -> None:
+        self.w_width = self.width
+        self.w_height = self.height

@@ -1,5 +1,4 @@
 ﻿from pygame import Surface
-
 from src.Data.Fonts import msyh_font
 from src.Libs.Window.display import Display
 from src.Window import Window
@@ -9,8 +8,6 @@ class EmbeddedWindow(Window):
     TITLE = 20
     def __init__(self, width=0, height=0, title="Window", icon=None):
         super().__init__(width, height + self.TITLE, title, icon)
-        from src.Window.Independence import IndependenceWindow
-        self.parent: IndependenceWindow | None = None
         self.active: bool = False
 
         self.bg = Surface((self.width, self.height))
@@ -38,7 +35,7 @@ class EmbeddedWindow(Window):
         self.bg_rect = self.bg.get_rect()
         self.bg.fill("Gray")
 
-        self.title_bar = Surface(Display.get_global_size(self.s_width, self.TITLE))
+        self.title_bar = Surface(Display.get_global_size(self.width, self.TITLE))
         self.title_bar_rect = self.title_bar.get_rect()
         self.title_bar.fill("Yellow")
 
