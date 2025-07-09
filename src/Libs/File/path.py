@@ -15,7 +15,6 @@ class MPath:
             Path: 当前工作目录的绝对路径
         """
         return Path.cwd()
-
     @property
     def scriptDir(self) -> Path:
         """
@@ -40,6 +39,15 @@ class MPath:
         if module and hasattr(module, '__file__'):
             return Path(os.path.dirname(os.path.abspath(module.__file__)))
         return Path(self.scriptDir)
+
+    @staticmethod
+    def get() -> Path:
+        if getattr(sys, 'frozen', False):
+            base_path = sys._MEIPASS
+        else:
+            base_path = os.path.abspath("")
+
+        return Path(base_path)
 
     @staticmethod
     def change_directory(path) -> None:

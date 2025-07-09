@@ -1,5 +1,7 @@
 ﻿import pygame
 
+pygame.init()
+
 from src.InputSystem import InputSystem
 from src.Libs.Utils.tool import Tool
 from src.Libs.Window import WindowUtils
@@ -9,8 +11,6 @@ WindowUtils.center()
 
 class Application:
     def __init__(self, main: str) -> None:
-        pygame.init()
-
         self.window_manager = WindowManager()
         self.window_init()
         self.window_manager.switch(main)

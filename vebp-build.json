@@ -2,7 +2,12 @@
   "main": "run.py",
   "console": false,
   "assets": [],
-  "in_assets": [],
+  "in_assets": [
+    {
+      "from": ["InternalResources"],
+      "to": "."
+    }
+  ],
   "sub_project": [
     {
       "path": "bin",
