@@ -7,11 +7,5 @@
       "from": ["InternalResources"],
       "to": "."
     }
-  ],
-  "sub_project": [
-    {
-      "path": "bin",
-      "script": "src/Vebp"
-    }
   ]
 }
