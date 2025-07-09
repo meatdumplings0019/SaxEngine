@@ -26,7 +26,7 @@ class CustomizeSurface(DisplaySurface):
         self.height = self.s_height
 
     def render(self) -> None:
-        self.box = Surface(Display.get_global_size(self.width, self.height))
+        self.box = Surface(Display.get_global_size(self.s_width, self.s_height))
         self.box_rect = self.box.get_rect(topleft=Display.get_global_size(self.s_x, self.s_y))
 
     def afterRender(self) -> None:

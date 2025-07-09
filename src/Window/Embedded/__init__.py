@@ -38,7 +38,7 @@ class EmbeddedWindow(Window):
         self.bg_rect = self.bg.get_rect()
         self.bg.fill("Gray")
 
-        self.title_bar = Surface(Display.get_global_size(self.width, self.TITLE))
+        self.title_bar = Surface(Display.get_global_size(self.s_width, self.TITLE))
         self.title_bar_rect = self.title_bar.get_rect()
         self.title_bar.fill("Yellow")
 
