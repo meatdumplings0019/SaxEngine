@@ -6,3 +6,10 @@ class Window(CustomizeSurface):
         super().__init__((width, height))
         self.title = title
         self.icon = icon
+
+        self.w_width = self.width
+        self.w_height = self.height
+
+    def return_size(self) -> None:
+        self.w_width = self.width
+        self.w_height = self.height

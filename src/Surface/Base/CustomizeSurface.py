@@ -48,7 +48,7 @@ class CustomizeSurface(BaseSurface):
         return self._y + getattr(self.parent, 'w_y', 0)
 
     def render(self) -> None:
-        self.box = Surface(Display.get_global_size(self._width, self._height))
+        self.box = Surface(Display.get_global_size(self.width, self.height))
         self.box_rect = self.box.get_rect(topleft=Display.get_global_size(self.w_x, self.w_y))
 
     def afterRender(self) -> None:

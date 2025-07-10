@@ -15,9 +15,6 @@ class IndependenceWindow(Window):
 
         self.embedded_windows: dict[str, EmbeddedWindow] = {}
 
-        self.w_width = self._width
-        self.w_height = self._height
-
     def add(self, _id, _val: EmbeddedWindow) -> Message[bool]:
         if not _id in self.embedded_windows:
             try:
@@ -72,7 +69,3 @@ class IndependenceWindow(Window):
             return Message(True)
         except Exception as e:
             return Message(False, e)
-
-    def return_size(self) -> None:
-        self.w_width = self.width
-        self.w_height = self.height
