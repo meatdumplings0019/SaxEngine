@@ -6,10 +6,10 @@ run and build use Vebp.
 
 ## run
 ```
-python.exe src/Vebp/run.py dev start
+vebp dev start
 ```
 
 ## build
 ```
-python.exe src/Vebp/run.py dev build
+vebp dev build
 ```
