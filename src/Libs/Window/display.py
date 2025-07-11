@@ -7,32 +7,40 @@ from src.Libs.Utils.types import vec2
 class Display:
     default_size = 1280, 720
     @staticmethod
-    def get_global_width(width) -> int:
-        s_width, s_height = pygame.display.get_window_size()
-        return int(s_width / Display.default_size[0] * width)
+    def get_global_width(width, surface=None, size: tuple = default_size) -> int:
+        if not surface:
+            surface = pygame.display.get_surface()
+        s_width, s_height = surface.get_size()
+        return int(s_width / size[0] * width)
 
     @staticmethod
-    def get_global_height(height) -> int:
-        s_width, s_height= pygame.display.get_window_size()
-        return int(s_height / Display.default_size[1] * height)
+    def get_global_height(height, surface=None, size: tuple = default_size) -> int:
+        if not surface:
+            surface = pygame.display.get_surface()
+        s_width, s_height = surface.get_size()
+        return int(s_height / size[1] * height)
 
     @staticmethod
-    def get_global_size(width, height) -> vec2:
-        return vec2(Display.get_global_width(width), Display.get_global_height(height))
+    def get_global_size(width, height, surface=None, size: tuple = default_size) -> vec2:
+        return vec2(Display.get_global_width(width, surface, size), Display.get_global_height(height, surface, size))
 
     @staticmethod
-    def get_return_width(width) -> int:
-        s_width, s_height = pygame.display.get_window_size()
-        return int(Display.default_size[0] / s_width * width)
+    def get_return_width(width, surface=None, size: tuple = default_size) -> int:
+        if not surface:
+            surface = pygame.display.get_surface()
+        s_width, s_height = surface.get_size()
+        return int(size[0] / s_width * width)
 
     @staticmethod
-    def get_return_height(height) -> int:
-        s_width, s_height = pygame.display.get_window_size()
-        return int(Display.default_size[1] / s_height * height)
+    def get_return_height(height, surface=None, size: tuple = default_size) -> int:
+        if not surface:
+            surface = pygame.display.get_surface()
+        s_width, s_height = surface.get_size()
+        return int(size[1] / s_height * height)
 
     @staticmethod
-    def get_return_size(width, height) -> vec2:
-        return vec2(Display.get_return_width(width), Display.get_return_height(height))
+    def get_return_size(width, height, surface=None, size: tuple = default_size) -> vec2:
+        return vec2(Display.get_return_width(width, surface, size), Display.get_return_height(height, surface, size))
 
     @staticmethod
     def center_object(parent_surface, child_surface) -> Rect:

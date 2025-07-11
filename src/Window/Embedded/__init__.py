@@ -4,7 +4,6 @@ from src.Data.Fonts import msyh_font
 from src.Data.Surface import black_surface
 from src.Data.Surface.texture import red_close_surface, red_max_surface
 from src.InputSystem import InputAction
-from src.Libs.Utils.types import vec2
 from src.Libs.Window.display import Display
 from src.Surface import SurfaceRender
 from src.Window import Window
@@ -32,7 +31,7 @@ class EmbeddedWindow(Window):
 
         self.max_btn = Surface((self.TITLE - self.TITLE // 4, self.TITLE - self.TITLE // 4))
         self.max_btn_rect = self.close_btn.get_rect(right=self.width - self.TITLE // 6 - self.TITLE // 6 - self.close_btn_rect.width,
-                                                      centery=self.title_bar_rect.centery)
+                                                    centery=self.title_bar_rect.centery)
         self.max_btn.fill("Gray")
 
         self.max = False
@@ -46,26 +45,28 @@ class EmbeddedWindow(Window):
 
     def handle_event(self, event: InputAction):
         super().handle_event(event)
-        if event.IsBtnDown(Display.get_global_rect(self.title_bar_rect, self.box_rect)) and not self.max:
+        if event.IsBtnDown(Display.get_global_rect(self.title_bar_rect, self.get_center_box())) and not self.max:
             mouse_pos = event.mousePosition
             self.is_dragging = True
-            self.drag_offset = mouse_pos - Display.get_global_size(self.x, self.y)
+            self.drag_offset = mouse_pos - Display.get_global_size(self.x, self.y, self.parent.box, (self.parent.s_width, self.parent.s_height))
 
         elif event.IsMouseUp() or self.max:
             self.is_dragging = False
         elif event.mouseMotion and self.is_dragging and not self.max:
-            new_pos = vec2(event.GetMousePosition()) - self.drag_offset
+            new_pos = event.mousePosition - self.drag_offset
+            new_pos = Display.get_global_size(new_pos[0], new_pos[1], self.parent.box, (self.parent.s_width, self.parent.s_height))
             new_pos.x = max(0, int(min(new_pos.x - self.box.get_width() / 2,
-                                       self.parent.surface_display.get_width() - self.title_bar_rect.width)))
+                                       self.parent.box.get_width() - self.title_bar_rect.width)))
             new_pos.y = max(0, int(min(new_pos.y - self.box.get_height() / 2,
-                                       self.parent.surface_display.get_height() - self.title_bar_rect.height)))
-            new_pos += (self.box.get_width() / 2, self.box.get_height() / 2)
-            new_pos = Display.get_return_size(new_pos.x, new_pos.y)
+                                       self.parent.box.get_height() - self.title_bar_rect.height)))
+            new_pos += self.box.get_width() / 2, self.box.get_height() / 2
+            new_pos -= self.parent.x, self.parent.y
+            new_pos = Display.get_return_size(new_pos.x, new_pos.y, self.parent.box, (self.parent.s_width, self.parent.s_height))
             self._x, self._y = new_pos
 
-        if event.IsBtnDown(Display.get_global_rect(self.close_btn_rect, self.box_rect)):
+        if event.IsBtnDown(Display.get_global_rect(self.close_btn_rect, self.get_center_box())):
             self.close()
-        if event.IsBtnDown(Display.get_global_rect(self.max_btn_rect, self.box_rect)):
+        if event.IsBtnDown(Display.get_global_rect(self.max_btn_rect, self.get_center_box())):
             self.max_window()
 
     def open(self, x, y) -> None:
@@ -79,23 +80,23 @@ class EmbeddedWindow(Window):
         if self.max:
             self.return_size()
         else:
-            self.w_width, self.w_height = self.parent.width, self.parent.height - self.TITLE
+            self.w_width, self.w_height = self.parent.s_width, self.parent.s_height
 
         self.max = not self.max
 
     def _draw_text(self) -> None:
         surf = msyh_font.render(self.TITLE + self.TITLE // 4).render(self.title, "Black")
-        rec = surf.get_rect(left = Display.get_global_width(self.TITLE // 4 + self.TITLE * 0.8), centery=self.title_bar_rect.centery)
+        rec = surf.get_rect(left = Display.get_global_width(self.TITLE // 4 + self.TITLE * 0.8, self.parent.box, (self.parent.s_width, self.parent.s_height)), centery=self.title_bar_rect.centery)
         self.title_bar.blit(surf, rec)
 
     def _draw_icon(self) -> None:
         icon_surf = self.icon.render(self.TITLE - self.TITLE // 4, self.TITLE - self.TITLE // 4)
-        icon_rect = icon_surf.get_rect(left = Display.get_global_width(self.TITLE // 6), centery=self.title_bar_rect.centery)
+        icon_rect = icon_surf.get_rect(left = Display.get_global_width(self.TITLE // 6, self.parent.box, (self.parent.s_width, self.parent.s_height)), centery=self.title_bar_rect.centery)
         self.title_bar.blit(icon_surf, icon_rect)
 
     def _draw_close_btn(self):
-        self.close_btn = Surface(Display.get_global_size(self.TITLE - self.TITLE // 4, self.TITLE - self.TITLE // 4))
-        self.close_btn_rect = self.close_btn.get_rect(right=Display.get_global_width(self.w_width - self.TITLE // 6), centery=self.title_bar_rect.centery)
+        self.close_btn = Surface(Display.get_global_size(self.TITLE - self.TITLE // 4, self.TITLE - self.TITLE // 4, self.parent.box, (self.parent.s_width, self.parent.s_height)))
+        self.close_btn_rect = self.close_btn.get_rect(right=Display.get_global_width(self.w_width - self.TITLE // 6, self.parent.box, (self.parent.s_width, self.parent.s_height)), centery=self.title_bar_rect.centery)
         self.close_btn.fill("Gray")
 
         close_btn = red_close_surface.render(self.TITLE - self.TITLE // 4 - self.TITLE // 10, self.TITLE - self.TITLE // 4 - self.TITLE // 10)
@@ -104,9 +105,9 @@ class EmbeddedWindow(Window):
         self.title_bar.blit(self.close_btn, self.close_btn_rect)
 
     def _draw_max_btn(self) -> None:
-        self.max_btn = Surface(Display.get_global_size(self.TITLE - self.TITLE // 4, self.TITLE - self.TITLE // 4))
+        self.max_btn = Surface(Display.get_global_size(self.TITLE - self.TITLE // 4, self.TITLE - self.TITLE // 4, self.parent.box, (self.parent.s_width, self.parent.s_height)))
         self.max_btn_rect = self.close_btn.get_rect(
-            right=Display.get_global_width(self.w_width - self.TITLE // 6 - self.TITLE // 6) - self.close_btn_rect.width,
+            right=Display.get_global_width(self.w_width - self.TITLE // 6 - self.TITLE // 6, self.parent.box, (self.parent.s_width, self.parent.s_height)) - self.close_btn_rect.width,
             centery=self.title_bar_rect.centery)
         self.max_btn.fill("Gray")
 
@@ -117,11 +118,11 @@ class EmbeddedWindow(Window):
         self.title_bar.blit(self.max_btn, self.max_btn_rect)
 
     def _draw(self):
-        self.bg = Surface(Display.get_global_size(self.w_width, self.w_height - self.TITLE))
-        self.bg_rect = self.bg.get_rect(top=Display.get_global_height(self.TITLE))
+        self.bg = Surface(Display.get_global_size(self.w_width, self.w_height - self.TITLE, self.parent.box, (self.parent.s_width, self.parent.s_height)))
+        self.bg_rect = self.bg.get_rect(top=Display.get_global_height(self.TITLE, self.parent.box, (self.parent.s_width, self.parent.s_height)))
         self.bg.fill("Gray")
 
-        self.title_bar = Surface(Display.get_global_size(self.w_width, self.TITLE))
+        self.title_bar = Surface(Display.get_global_size(self.w_width, self.TITLE, self.parent.box, (self.parent.s_width, self.parent.s_height)))
         self.title_bar_rect = self.title_bar.get_rect()
         self.title_bar.fill("Yellow")
 
@@ -134,9 +135,9 @@ class EmbeddedWindow(Window):
 
     def render(self) -> None:
         super().render()
-        self.box = Surface(Display.get_global_size(self.w_width, self.w_height))
+        self.box = Surface(Display.get_global_size(self.w_width, self.w_height, self.parent.box, (self.parent.s_width, self.parent.s_height)))
         if not self.max:
-            self.box_rect = self.box.get_rect(center=Display.get_global_size(self.w_x, self.w_y))
+            self.box_rect = self.box.get_rect(center=Display.get_global_size(self.w_x, self.w_y, self.parent.box, (self.parent.s_width, self.parent.s_height)))
         else:
             self.box_rect = self.box.get_rect()
         self.box.fill("White")

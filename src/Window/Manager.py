@@ -1,14 +1,15 @@
 ﻿import pygame
+from pygame import Rect
 
 from src.InputSystem import InputAction
-from src.Libs.Window.resolution import Resolution_
 from src.Libs.Utils import Message
+from src.Libs.Window.resolution import Resolution_
 from src.Manager import Manager
 from src.Surface.Base.DisplaySurface import DisplaySurface
 from src.Window import Window
+from src.Window.Independence import IndependenceWindow
 from src.Window.Independence.DefaultWindow import DefaultWindow
 from src.Window.Independence.EmptyWindow import EmptyWindow
-from src.Window.Independence import IndependenceWindow
 
 
 class WindowManager(Manager, DisplaySurface):
@@ -90,6 +91,9 @@ class WindowManager(Manager, DisplaySurface):
 
     def exit(self) -> None:
         self.current_window.exit()
+
+    def get_center_box(self) -> Rect:
+        return self.surface_display.get_rect()
 
     def set_window_size(self) -> None:
         pygame.display.set_mode((self.current_window.w_width, self.current_window.w_height), self.current_window.window_state)

@@ -1,19 +1,29 @@
-﻿from src.InputSystem import InputAction
+﻿from pygame import Surface
+
+from src.InputSystem import InputAction
 from src.InputSystem.KeyCode import KeyCode
 from src.Libs.Utils import Message
+from src.Libs.Window.display import Display
 from src.Window import Window
 from src.Window.Embedded import EmbeddedWindow
 
 
 class IndependenceWindow(Window):
-    def __init__(self, width = 0, height = 0, title = "Window", full_key: KeyCode = KeyCode.K_F11) -> None:
-        super().__init__(width, height, title)
+    TITLE = 25
+    def __init__(self, width = 0, height = 0, title = "Window", icon=None, full_key: KeyCode = KeyCode.K_F11) -> None:
+        super().__init__(width, height - self.TITLE, title, icon, (width, height))
+        self._y = self.TITLE
+
         self.window_state = 0
 
         self.is_fullscreen = False
         self.full_key = full_key
 
         self.embedded_windows: dict[str, EmbeddedWindow] = {}
+
+        self.topbar = Surface((self.width, self.TITLE))
+        self.topbar_rect = self.topbar.get_rect()
+        self.topbar.fill("Blue")
 
     def add(self, _id, _val: EmbeddedWindow) -> Message[bool]:
         if not _id in self.embedded_windows:
@@ -61,6 +71,7 @@ class IndependenceWindow(Window):
     def open_children(self, _id: str, x=None, y=None) -> Message[bool]:
         if not x:
             x = self.width / 2
+        if not y:
             y = self.height / 2
 
         try:
@@ -69,3 +80,10 @@ class IndependenceWindow(Window):
             return Message(True)
         except Exception as e:
             return Message(False, e)
+
+    def render(self) -> None:
+        super().render()
+        self.topbar = Surface((self.w_width, Display.get_global_height(self.TITLE, size=(self.s_width, self.s_height))))
+        self.topbar_rect = self.topbar.get_rect()
+        self.topbar.fill("Green")
+        self.surface_display.blit(self.topbar, self.topbar_rect)
